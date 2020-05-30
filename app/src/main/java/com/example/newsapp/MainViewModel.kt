@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MainViewModel : ViewModel() {
 
@@ -16,12 +17,16 @@ class MainViewModel : ViewModel() {
     var news = MutableLiveData<NewsModel>()
 
     fun getNews(country: String) = viewModelScope.launch(Dispatchers.Default) {
-        api.news.getTopHeadlines(country)
-            .subscribeOn(Schedulers.io())
-            .await().let {
-                withContext(Dispatchers.Main) {
-                    news.value = it
+        runCatching {
+            api.news.getTopHeadlines(country)
+                .subscribeOn(Schedulers.io())
+                .await().let {
+                    withContext(Dispatchers.Main) {
+                        news.value = it
+                    }
                 }
-            }
+        }.onFailure {
+            Timber.tag("Error").e(it)
+        }
     }
 }
