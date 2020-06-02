@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsapp.api.API
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
@@ -18,9 +17,7 @@ class MainViewModel : ViewModel() {
 
     fun getNews(country: String) = viewModelScope.launch(Dispatchers.Default) {
         runCatching {
-            api.news.getTopHeadlines(country)
-                .subscribeOn(Schedulers.io())
-                .await().let {
+            api.news.getTopHeadlines(country).await().let {
                     withContext(Dispatchers.Main) {
                         news.value = it
                     }
