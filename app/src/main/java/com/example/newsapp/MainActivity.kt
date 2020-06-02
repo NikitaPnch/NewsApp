@@ -3,8 +3,10 @@ package com.example.newsapp
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.distinctUntilChanged
 import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -16,6 +18,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var newsAdapter: NewsAdapter
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        changeStatusBarColor()
 
         newsAdapter = NewsAdapter(busEvent)
         newsAdapter.appendTo(rv_news, this)
@@ -85,5 +89,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             snackBar?.dismiss()
         }
+    }
+
+    private fun changeStatusBarColor() {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorWhite)
     }
 }
