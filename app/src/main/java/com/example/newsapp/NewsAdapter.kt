@@ -33,7 +33,8 @@ class NewsAdapter(private val busEvent: PublishSubject<Any>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val article = articles[position]
-        holder.newsImage.setImageURI(article.urlToImage)
+
+        holder.newsImage.createImageRequest(article.urlToImage)
         holder.newsHeader.text = article.title
         holder.newsContent.text = article.description
         holder.newsContainer.setOnClickListener {
