@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.extensions
 
 import android.annotation.TargetApi
 import android.content.BroadcastReceiver

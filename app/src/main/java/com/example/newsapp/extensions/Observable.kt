@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.extensions
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveDataReactiveStreams

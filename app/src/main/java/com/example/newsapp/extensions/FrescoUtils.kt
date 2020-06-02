@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.extensions
 
 import android.net.Uri
 import com.facebook.drawee.backends.pipeline.Fresco

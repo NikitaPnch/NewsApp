@@ -1,7 +1,7 @@
 package com.example.newsapp
 
 import android.app.Application
-import com.codemonkeylabs.fpslibrary.TinyDancer
+import com.example.newsapp.extensions.appModule
 import com.facebook.drawee.backends.pipeline.Fresco
 import org.koin.core.context.startKoin
 import timber.log.Timber

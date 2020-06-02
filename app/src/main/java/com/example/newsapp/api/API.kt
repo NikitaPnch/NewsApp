@@ -13,6 +13,7 @@ class API {
     companion object {
         private const val BASE_URL = "https://newsapi.org/"
         private const val KEY = "4f26925b85824439a8d15410472beff9"
+        const val PAGE_SIZE = 100
     }
 
     private val logging = HttpLoggingInterceptor(
@@ -22,7 +23,7 @@ class API {
             }
         }
     ).apply {
-        setLevel(HttpLoggingInterceptor.Level.BASIC)
+        setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
     private val okHttpClient = OkHttpClient.Builder()

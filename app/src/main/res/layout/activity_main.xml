@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:id="@+id/root_layout"
     android:animateLayoutChanges="true"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <LinearLayout
         android:id="@+id/main_bar"

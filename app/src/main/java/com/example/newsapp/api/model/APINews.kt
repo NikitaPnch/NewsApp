@@ -1,6 +1,6 @@
-package com.example.newsapp
+package com.example.newsapp.api.model
 
-data class NewsModel(
+data class APINews(
     val status: String,
     val totalResults: Int,
     val articles: List<Article>
