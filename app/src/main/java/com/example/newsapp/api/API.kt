@@ -23,7 +23,7 @@ class API {
             }
         }
     ).apply {
-        setLevel(HttpLoggingInterceptor.Level.BODY)
+        setLevel(HttpLoggingInterceptor.Level.BASIC)
     }
 
     private val okHttpClient = OkHttpClient.Builder()
