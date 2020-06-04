@@ -14,7 +14,7 @@ class DBNews(
     val author: String? = "",
     val title: String? = "",
     val description: String? = "",
-    val urlToImage: String? = null,
+    val urlToImage: String? = "",
     val publishedAt: String = "",
     val content: String? = ""
 ) {

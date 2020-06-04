@@ -2,18 +2,14 @@ package com.example.newsapp.ui
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.distinctUntilChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.Events
-import com.example.newsapp.viewmodel.MainViewModel
 import com.example.newsapp.R
-import com.example.newsapp.extensions.ConnectionLiveData
-import com.example.newsapp.extensions.debounce
-import com.example.newsapp.extensions.getTimestampFromString
-import com.example.newsapp.extensions.observe
+import com.example.newsapp.extensions.*
+import com.example.newsapp.viewmodel.MainViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.uber.autodispose.android.lifecycle.scope
@@ -22,8 +18,6 @@ import io.reactivex.rxkotlin.ofType
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,14 +32,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupRecycler()
+        setupSwipeRefreshNews()
 
         model.newsListLiveDatabase.observe(this) {
-            it?.let {
-                newsAdapter.setData(it)
-                if (pb_news_loading.visibility == View.VISIBLE) {
-                    pb_news_loading.visibility = View.GONE
-                }
+            it?.sortedByDescending { getTimestampFromString(it.publishedAt) }?.let { articles ->
+                newsAdapter.setData(articles)
             }
+        }
+
+        model.isLoading.observeNotNull(this) { isLoading ->
+            srl_refresh_news.isRefreshing = isLoading
         }
 
         ConnectionLiveData(this)
@@ -74,25 +70,16 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    private fun setupSwipeRefreshNews() {
+        srl_refresh_news.setOnRefreshListener {
+            getNews()
+        }
+    }
+
     private fun setupRecycler() {
         val layoutManager = LinearLayoutManager(this)
         newsAdapter = NewsAdapter(busEvent)
         newsAdapter.appendTo(rv_news, layoutManager)
-//        rv_news.addOnScrollListener(object : PaginationListener(layoutManager) {
-//            override fun isLoading(): Boolean? {
-//                return model.isLoading.value
-//            }
-//
-//            override fun isLastPage(): Boolean? {
-//                return model.isLastPage.value
-//            }
-//
-//            override fun loadMoreItems() {
-//                if (isConnected) {
-//                    getNews()
-//                }
-//            }
-//        })
     }
 
     // получить новости

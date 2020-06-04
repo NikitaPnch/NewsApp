@@ -11,7 +11,6 @@ import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.db.DBNews
 import com.example.newsapp.extensions.createImageRequest
-import com.example.newsapp.extensions.getTimestampFromString
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.subjects.PublishSubject
 
@@ -33,23 +32,33 @@ class NewsAdapter(private val busEvent: PublishSubject<Any>) :
         private val newsImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_image_news)
         private val newsHeader: TextView = itemView.findViewById(R.id.tv_header_news)
         private val newsContent: TextView = itemView.findViewById(R.id.tv_news_content)
+        private val divider: View = itemView.findViewById(R.id.view_item_divider)
 
         override fun onBind(position: Int) {
             super.onBind(position)
             val article = articles[position]
-            article.urlToImage?.let {
+
+            if (article.urlToImage.isNullOrBlank()) {
+                newsImage.visibility = View.GONE
+            } else {
+                newsImage.visibility = View.VISIBLE
                 newsImage.createImageRequest(article.urlToImage)
-            } ?: let { newsImage.visibility = View.GONE }
+            }
+
+            if (articles.last() == article) {
+                divider.visibility = View.GONE
+            } else {
+                divider.visibility = View.VISIBLE
+            }
+
             newsHeader.text = article.title
             newsContent.text = article.description
-            article.url.let {
-                newsContainer.setOnClickListener {
-                    busEvent.onNext(
-                        Events.NewsClickEvent(
-                            article.url
-                        )
+            newsContainer.setOnClickListener {
+                busEvent.onNext(
+                    Events.NewsClickEvent(
+                        article.url
                     )
-                }
+                )
             }
         }
     }
@@ -78,7 +87,7 @@ class NewsAdapter(private val busEvent: PublishSubject<Any>) :
     }
 
     fun setData(articles: List<DBNews>) {
-        this.articles = articles.sortedBy { getTimestampFromString(it.publishedAt) }
+        this.articles = articles
         notifyDataSetChanged()
     }
 
@@ -86,9 +95,5 @@ class NewsAdapter(private val busEvent: PublishSubject<Any>) :
         this.recyclerView = recyclerView
         this.recyclerView.layoutManager = layoutManager
         this.recyclerView.adapter = this
-    }
-
-    private fun getItem(position: Int): DBNews? {
-        return articles[position]
     }
 }
