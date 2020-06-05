@@ -10,3 +10,6 @@ fun <T> Observable<T>.liveData(strategy: BackpressureStrategy = BackpressureStra
 
 fun <T> Observable<T>.liveData(lifecycleOwner: LifecycleOwner, observer: (T?) -> Unit) =
     liveData().observe(lifecycleOwner) { observer(it) }
+
+fun <T> Observable<T>.liveDataNotNull(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) =
+    liveData().observe(lifecycleOwner) { it?.let(observer) }

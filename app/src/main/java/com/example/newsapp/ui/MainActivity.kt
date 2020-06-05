@@ -4,11 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.lifecycle.distinctUntilChanged
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.extensions.*
+import com.example.newsapp.viewmodel.Action
 import com.example.newsapp.viewmodel.MainViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,7 @@ import io.reactivex.rxkotlin.ofType
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private val model by viewModel<MainViewModel>()
     private val busEvent = PublishSubject.create<Any>()
     private var snackBar: Snackbar? = null
-    private var isConnected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,29 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         setupRecycler()
         setupSwipeRefreshNews()
-
-        model.newsListLiveDatabase.observe(this) {
-            it?.sortedByDescending { getTimestampFromString(it.publishedAt) }?.let { articles ->
-                newsAdapter.setData(articles)
-            }
-        }
-
-        model.isLoading.observeNotNull(this) { isLoading ->
-            srl_refresh_news.isRefreshing = isLoading
-        }
-
-        ConnectionLiveData(this)
-            .distinctUntilChanged()
-            .debounce(1000L)
-            .observe(this) { isConnected ->
-                isConnected?.let {
-                    this.isConnected = it
-                    showNetworkMessage(it)
-                    if (isConnected) {
-                        getNews()
-                    }
-                }
-            }
+        setupObservers()
     }
 
     override fun onResume() {
@@ -65,8 +44,38 @@ class MainActivity : AppCompatActivity() {
             .autoDispose(scope())
             .subscribe {
                 val builder = CustomTabsIntent.Builder()
+                builder.setToolbarColor(ContextCompat.getColor(this, R.color.colorWhite))
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(this, Uri.parse(it.url))
+            }
+    }
+
+    private fun setupObservers() {
+        model.newsListLiveData.observeNotNull(this) { unsortedList ->
+            unsortedList.sortedByDescending { getTimestampFromString(it.publishedAt) }
+                .let { sortedList ->
+                    newsAdapter.setData(sortedList)
+                }
+        }
+
+        model.isLoading.observeNotNull(this) { isLoading ->
+            srl_refresh_news.isRefreshing = isLoading
+        }
+
+        model.listen<Action.Error>().liveDataNotNull(this) {
+            model.isLoading.value = false
+            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
+        }
+
+        ConnectionLiveData(this)
+            .debounce(1000L)
+            .observe(this) { isConnected ->
+                isConnected?.let {
+                    showNetworkMessage(it)
+                    if (isConnected) {
+                        getNews()
+                    }
+                }
             }
     }
 
@@ -84,8 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     // получить новости
     private fun getNews() {
-        val locale: String = resources.configuration.locale.country
-        model.getNews(locale)
+        model.send { MainActions.GetNews(getLocale(resources)) }
     }
 
     private fun showNetworkMessage(isConnected: Boolean) {

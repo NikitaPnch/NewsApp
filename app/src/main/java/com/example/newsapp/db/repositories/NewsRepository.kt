@@ -12,11 +12,7 @@ class NewsRepository {
 
     val newsListLiveData: LiveData<List<DBNews>> = newsDao.queryNews()
 
-    suspend fun insertNews(article: List<APINews.Article>) {
-        newsDao.insertNews(article.asDatabaseModel())
-    }
-
-    suspend fun getNews(): List<DBNews> {
-        return newsDao.getNews()
+    suspend fun updateNews(article: List<APINews.Article>) {
+        newsDao.updateNews(article.asDatabaseModel())
     }
 }
