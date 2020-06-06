@@ -1,73 +1,37 @@
 package com.example.newsapp.ui
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.newsapp.Events
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.distinctUntilChanged
 import com.example.newsapp.R
-import com.example.newsapp.extensions.*
-import com.example.newsapp.viewmodel.Action
+import com.example.newsapp.extensions.ConnectionLiveData
+import com.example.newsapp.extensions.debounce
+import com.example.newsapp.extensions.getLocale
+import com.example.newsapp.extensions.observe
+import com.example.newsapp.ui.fragments.search.SearchFragment
+import com.example.newsapp.ui.fragments.topheadlines.TopHeadlinesFragment
 import com.example.newsapp.viewmodel.MainViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
-import io.reactivex.rxkotlin.ofType
-import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var newsAdapter: NewsAdapter
     private val model by viewModel<MainViewModel>()
-    private val busEvent = PublishSubject.create<Any>()
     private var snackBar: Snackbar? = null
+    private val topHeadlinesFragment by lazy { TopHeadlinesFragment() }
+    private val searchFragment by lazy { SearchFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setupRecycler()
-        setupSwipeRefreshNews()
-        setupObservers()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        busEvent.ofType<Events.NewsClickEvent>()
-            .autoDispose(scope())
-            .subscribe {
-                val builder = CustomTabsIntent.Builder()
-                builder.setToolbarColor(ContextCompat.getColor(this, R.color.colorWhite))
-                val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(this, Uri.parse(it.url))
-            }
-    }
-
-    private fun setupObservers() {
-        model.newsListLiveData.observeNotNull(this) { unsortedList ->
-            unsortedList.sortedByDescending { getTimestampFromString(it.publishedAt) }
-                .let { sortedList ->
-                    newsAdapter.setData(sortedList)
-                }
-        }
-
-        model.isLoading.observeNotNull(this) { isLoading ->
-            srl_refresh_news.isRefreshing = isLoading
-        }
-
-        model.listen<Action.Error>().liveDataNotNull(this) {
-            model.isLoading.value = false
-            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
-        }
+        replaceFragment(topHeadlinesFragment)
 
         ConnectionLiveData(this)
+            .distinctUntilChanged()
             .debounce(1000L)
             .observe(this) { isConnected ->
                 isConnected?.let {
@@ -77,18 +41,26 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-    }
 
-    private fun setupSwipeRefreshNews() {
-        srl_refresh_news.setOnRefreshListener {
-            getNews()
+        bottom_navigation.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_today -> replaceFragment(topHeadlinesFragment)
+                R.id.action_search -> replaceFragment(searchFragment)
+                else -> replaceFragment(topHeadlinesFragment)
+            }
+            true
         }
     }
 
-    private fun setupRecycler() {
-        val layoutManager = LinearLayoutManager(this)
-        newsAdapter = NewsAdapter(busEvent)
-        newsAdapter.appendTo(rv_news, layoutManager)
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_container, fragment)
+            addToBackStack(fragment.tag)
+        }.commit()
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount < 2) finish() else super.onBackPressed()
     }
 
     // получить новости

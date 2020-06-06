@@ -13,4 +13,14 @@ interface News {
         @Query("country") country: String? = null,
         @Query("pageSize") pageSize: Int? = API.PAGE_SIZE
     ): Single<APINews>
+
+    @GET("v2/everything")
+    fun searchEverything(
+        @Query("q") query: String,
+        @Query("sortBy") sortBy: String? = API.PUBLISHED_AT,
+        @Query("language") language: String? = "ru",
+        @Query("from") from: String? = null,
+        @Query("to") to: String? = null,
+        @Query("pageSize") pageSize: Int? = API.PAGE_SIZE
+    ): Single<APINews>
 }

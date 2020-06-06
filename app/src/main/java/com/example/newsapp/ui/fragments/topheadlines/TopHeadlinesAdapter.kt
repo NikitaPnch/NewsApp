@@ -1,4 +1,4 @@
-package com.example.newsapp.ui
+package com.example.newsapp.ui.fragments.topheadlines
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +11,11 @@ import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.db.DBNews
 import com.example.newsapp.extensions.createImageRequest
+import com.example.newsapp.ui.BaseViewHolder
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.subjects.PublishSubject
 
-class NewsAdapter(private val busEvent: PublishSubject<Any>) :
+class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
     private var articles: List<DBNews> = emptyList()
@@ -68,8 +69,11 @@ class NewsAdapter(private val busEvent: PublishSubject<Any>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TYPE_NEWS -> ViewHolder(inflater.inflate(
-                R.layout.item_news, parent, false))
+            TYPE_NEWS -> ViewHolder(
+                inflater.inflate(
+                    R.layout.item_top_headlines, parent, false
+                )
+            )
             else -> ProgressHolder(inflater.inflate(R.layout.item_loading, parent, false))
         }
     }

@@ -1,4 +1,4 @@
-package com.example.newsapp.ui
+package com.example.newsapp.ui.fragments.topheadlines
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.newsapp.api.model.APINews

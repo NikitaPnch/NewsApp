@@ -2,6 +2,7 @@ package com.example.newsapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.example.newsapp.api.API
+import com.example.newsapp.api.model.APINews
 import com.example.newsapp.db.repositories.NewsRepository
 import com.example.newsapp.ui.MainActions
 import kotlinx.coroutines.Dispatchers
@@ -13,14 +14,17 @@ class MainViewModel : BaseViewModel() {
     private val api by lazy { API() }
     private var totalResults: Int? = null
     private var repository: NewsRepository = NewsRepository()
-    var newsListLiveData = repository.newsListLiveData
+    var topHeadlinesLiveData = repository.newsListLiveData
+    val searchLiveData = MutableLiveData(emptyList<APINews.Article>())
     val isLoading = MutableLiveData(false)
+    val isLoadingSearch = MutableLiveData(false)
 
     override suspend fun listen(action: Action) {
         super.listen(action)
 
         when (action) {
             is MainActions.GetNews -> getNews(action.country)
+            is MainActions.SearchNews -> searchNews(action.query)
         }
     }
 
@@ -32,6 +36,19 @@ class MainViewModel : BaseViewModel() {
                 withContext(Dispatchers.Main) {
                     totalResults = it.totalResults
                     isLoading.value = false
+                }
+            }
+        }
+    }
+
+    private suspend fun searchNews(query: String) {
+        isLoadingSearch.value = true
+        withContext(Dispatchers.IO) {
+            api.news.searchEverything(query).await().let {
+                withContext(Dispatchers.Main) {
+                    totalResults = it.totalResults
+                    searchLiveData.value = it.articles
+                    isLoadingSearch.value = false
                 }
             }
         }
