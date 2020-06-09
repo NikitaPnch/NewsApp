@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.fragments.search
+package com.example.newsapp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,16 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.Events
 import com.example.newsapp.R
-import com.example.newsapp.api.model.APINews
+import com.example.newsapp.db.DBNews
 import com.example.newsapp.extensions.createImageRequest
-import com.example.newsapp.ui.BaseViewHolder
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.subjects.PublishSubject
 
-class SearchAdapter(private val busEvent: PublishSubject<Any>) :
+class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
-    private var articles: List<APINews.Article> = emptyList()
+    private var articles: List<DBNews> = emptyList()
     private lateinit var recyclerView: RecyclerView
     private var isLoaderVisible = false
 
@@ -29,20 +28,27 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
         private val newsContainer: ConstraintLayout =
-            itemView.findViewById(R.id.cl_search_item_container)
-        private val newsImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_search_image)
-        private val newsHeader: TextView = itemView.findViewById(R.id.tv_search_title)
-        private val newsContent: TextView = itemView.findViewById(R.id.tv_search_description)
+            itemView.findViewById(R.id.cl_news_item_container)
+        private val newsImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_image_news)
+        private val newsHeader: TextView = itemView.findViewById(R.id.tv_header_news)
+        private val newsContent: TextView = itemView.findViewById(R.id.tv_news_content)
+        private val divider: View = itemView.findViewById(R.id.view_item_divider)
 
         override fun onBind(position: Int) {
             super.onBind(position)
             val article = articles[position]
 
-            article.urlToImage?.let {
+            if (article.urlToImage.isNullOrBlank()) {
+                newsImage.visibility = View.GONE
+            } else {
                 newsImage.visibility = View.VISIBLE
                 newsImage.createImageRequest(article.urlToImage)
-            } ?: let {
-                newsImage.visibility = View.GONE
+            }
+
+            if (articles.last() == article) {
+                divider.visibility = View.GONE
+            } else {
+                divider.visibility = View.VISIBLE
             }
 
             newsHeader.text = article.title
@@ -64,7 +70,7 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
         return when (viewType) {
             TYPE_NEWS -> ViewHolder(
                 inflater.inflate(
-                    R.layout.item_search, parent, false
+                    R.layout.item_top_headlines, parent, false
                 )
             )
             else -> ProgressHolder(inflater.inflate(R.layout.item_loading, parent, false))
@@ -83,7 +89,7 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
         } else TYPE_NEWS
     }
 
-    fun setData(articles: List<APINews.Article>) {
+    fun setData(articles: List<DBNews>) {
         this.articles = articles
         notifyDataSetChanged()
     }

@@ -9,8 +9,9 @@ import com.example.newsapp.extensions.ConnectionLiveData
 import com.example.newsapp.extensions.debounce
 import com.example.newsapp.extensions.getLocale
 import com.example.newsapp.extensions.observe
-import com.example.newsapp.ui.fragments.search.SearchFragment
-import com.example.newsapp.ui.fragments.topheadlines.TopHeadlinesFragment
+import com.example.newsapp.ui.fragments.SearchFragment
+import com.example.newsapp.ui.fragments.TopHeadlinesFragment
+import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -55,12 +56,7 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_container, fragment)
-            addToBackStack(fragment.tag)
         }.commit()
-    }
-
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount < 2) finish() else super.onBackPressed()
     }
 
     // получить новости

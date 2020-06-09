@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.newsapp.api.API
 import com.example.newsapp.api.model.APINews
 import com.example.newsapp.db.repositories.NewsRepository
-import com.example.newsapp.ui.MainActions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
@@ -19,12 +18,17 @@ class MainViewModel : BaseViewModel() {
     val isLoading = MutableLiveData(false)
     val isLoadingSearch = MutableLiveData(false)
 
+    val fromDate: MutableLiveData<String> = MutableLiveData()
+    val toDate: MutableLiveData<String> = MutableLiveData()
+    val sortBy: MutableLiveData<String> = MutableLiveData()
+    private var query: String = ""
+
     override suspend fun listen(action: Action) {
         super.listen(action)
 
         when (action) {
             is MainActions.GetNews -> getNews(action.country)
-            is MainActions.SearchNews -> searchNews(action.query)
+            is MainActions.SearchNews -> searchNews()
         }
     }
 
@@ -41,10 +45,15 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
-    private suspend fun searchNews(query: String) {
+    private suspend fun searchNews() {
         isLoadingSearch.value = true
         withContext(Dispatchers.IO) {
-            api.news.searchEverything(query).await().let {
+            api.news.searchEverything(
+                query,
+                sortBy.value,
+                fromDate.value,
+                toDate.value
+            ).await().let {
                 withContext(Dispatchers.Main) {
                     totalResults = it.totalResults
                     searchLiveData.value = it.articles
@@ -52,5 +61,21 @@ class MainViewModel : BaseViewModel() {
                 }
             }
         }
+    }
+
+    fun setQuery(text: String) {
+        query = text
+    }
+
+    fun setFromDate(date: String) {
+        fromDate.value = date
+    }
+
+    fun setToDate(date: String) {
+        toDate.value = date
+    }
+
+    fun setSortBy(sort: String) {
+        sortBy.value = sort
     }
 }

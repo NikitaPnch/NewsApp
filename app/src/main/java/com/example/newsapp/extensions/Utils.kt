@@ -29,3 +29,7 @@ fun hideKeyboard(activity: Activity) {
     }
     imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
+
+fun toQueryDate(year: Int, month: Int, dayOfMonth: Int): String {
+    return "$year-${month + 1}-${dayOfMonth}"
+}

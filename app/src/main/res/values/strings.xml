@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">NewsApp</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string-array name="filterNames">
+        <item>Дате публикации</item>
+        <item>Популярности</item>
+        <item>Актуальности</item>
+    </string-array>
 </resources>

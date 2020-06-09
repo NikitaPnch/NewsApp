@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.fragments.topheadlines
+package com.example.newsapp.ui.fragments
 
 import android.net.Uri
 import android.os.Bundle
@@ -15,8 +15,9 @@ import com.example.newsapp.extensions.getLocale
 import com.example.newsapp.extensions.getTimestampFromString
 import com.example.newsapp.extensions.liveDataNotNull
 import com.example.newsapp.extensions.observeNotNull
-import com.example.newsapp.ui.MainActions
+import com.example.newsapp.ui.adapters.TopHeadlinesAdapter
 import com.example.newsapp.viewmodel.Action
+import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose

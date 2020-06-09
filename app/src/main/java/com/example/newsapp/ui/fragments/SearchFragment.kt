@@ -1,4 +1,4 @@
-package com.example.newsapp.ui.fragments.search
+package com.example.newsapp.ui.fragments
 
 import android.net.Uri
 import android.os.Bundle
@@ -15,9 +15,11 @@ import com.example.newsapp.R
 import com.example.newsapp.extensions.hideKeyboard
 import com.example.newsapp.extensions.liveDataNotNull
 import com.example.newsapp.extensions.observeNotNull
-import com.example.newsapp.ui.MainActions
+import com.example.newsapp.ui.adapters.SearchAdapter
 import com.example.newsapp.viewmodel.Action
+import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
+import com.jakewharton.rxbinding3.view.clicks
 import com.jakewharton.rxbinding3.widget.textChanges
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
@@ -34,6 +36,7 @@ class SearchFragment : Fragment() {
     private val model by sharedViewModel<MainViewModel>()
     private lateinit var searchAdapter: SearchAdapter
     private val busEvent = PublishSubject.create<Any>()
+    private val filterDialog by lazy { FilterBottomSheetFragment() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +50,16 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecycler()
         setupObservers()
+
+        model.listen<Action.Error>().liveDataNotNull(this) {
+            hideProgressBar()
+        }
+
+        ll_select_filter
+            .clicks()
+            .liveDataNotNull(this) {
+                showFilterFragment()
+            }
     }
 
     override fun onResume() {
@@ -57,13 +70,14 @@ class SearchFragment : Fragment() {
                 query.toString().toLowerCase(Locale.getDefault()).trim()
             }
             .debounce(500L, TimeUnit.MILLISECONDS)
-            .distinct()
+            .distinctUntilChanged()
             .filter { query ->
                 query.isNotBlank()
             }
             .autoDispose(scope())
             .subscribe { query ->
-                getNews(query)
+                model.setQuery(query)
+                model.send { MainActions.SearchNews() }
             }
 
         busEvent.ofType<Events.NewsClickEvent>()
@@ -81,14 +95,9 @@ class SearchFragment : Fragment() {
             }
     }
 
-    private fun getNews(query: String) {
-        model.send { MainActions.SearchNews(query) }
-    }
-
     private fun setupRecycler() {
         val layoutManager = LinearLayoutManager(this.requireActivity())
-        searchAdapter =
-            SearchAdapter(busEvent)
+        searchAdapter = SearchAdapter(busEvent)
         searchAdapter.appendTo(rv_news_search, layoutManager)
 
         rv_news_search.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -102,6 +111,10 @@ class SearchFragment : Fragment() {
         })
     }
 
+    private fun showFilterFragment() {
+        filterDialog.show(parentFragmentManager, "filter_dialog")
+    }
+
     private fun setupObservers() {
 
         model.searchLiveData.observeNotNull(this) {
@@ -112,11 +125,9 @@ class SearchFragment : Fragment() {
 
         model.isLoadingSearch.observeNotNull(this) {
             if (it) {
-                iv_select_filter.visibility = View.GONE
-                progress_search.visibility = View.VISIBLE
+                showProgressBar()
             } else {
-                iv_select_filter.visibility = View.VISIBLE
-                progress_search.visibility = View.GONE
+                hideProgressBar()
             }
         }
 
@@ -124,5 +135,15 @@ class SearchFragment : Fragment() {
             model.isLoading.value = false
             Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
+    }
+
+    private fun showProgressBar() {
+        ll_select_filter.visibility = View.GONE
+        progress_search.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        ll_select_filter.visibility = View.VISIBLE
+        progress_search.visibility = View.GONE
     }
 }
