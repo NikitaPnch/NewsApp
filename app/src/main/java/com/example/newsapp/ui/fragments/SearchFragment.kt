@@ -77,7 +77,7 @@ class SearchFragment : Fragment() {
             }
             .autoDispose(scope())
             .subscribe { query ->
-                model.setQuery(query)
+                model.send { MainActions.SetQuery(query) }
                 model.send { MainActions.SearchNews() }
             }
 

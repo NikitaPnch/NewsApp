@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 open class BaseViewModel : ViewModel() {
 
-    val bus = PublishSubject.create<Action>()
+    val bus: PublishSubject<Action> = PublishSubject.create()
 
     protected open suspend fun listen(action: Action) {}
 

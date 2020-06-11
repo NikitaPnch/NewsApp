@@ -54,7 +54,11 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
                 position: Int,
                 id: Long
             ) {
-                model.setSortBy(map[arrayString[position]] ?: error("No Such Filter"))
+                model.send {
+                    MainActions.SetSortBy(
+                        map[arrayString[position]] ?: error("No Such Filter")
+                    )
+                }
             }
         }
 
@@ -117,9 +121,9 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
     ): DatePickerDialog.OnDateSetListener {
         return DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             if (isFromDate) {
-                model.setFromDate(toQueryDate(year, month, dayOfMonth))
+                model.send { MainActions.SetFromDate(toQueryDate(year, month, dayOfMonth)) }
             } else {
-                model.setToDate(toQueryDate(year, month, dayOfMonth))
+                model.send { MainActions.SetToDate(toQueryDate(year, month, dayOfMonth)) }
             }
         }
     }

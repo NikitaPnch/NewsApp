@@ -52,7 +52,13 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
             }
 
             newsHeader.text = article.title
-            newsContent.text = article.description
+
+            if (article.description.isNullOrBlank()) {
+                newsContent.visibility = View.GONE
+            } else {
+                newsContent.visibility = View.VISIBLE
+                newsContent.text = article.description
+            }
             newsContainer.setOnClickListener {
                 busEvent.onNext(
                     Events.NewsClickEvent(

@@ -29,6 +29,10 @@ class MainViewModel : BaseViewModel() {
         when (action) {
             is MainActions.GetNews -> getNews(action.country)
             is MainActions.SearchNews -> searchNews()
+            is MainActions.SetQuery -> setQuery(action.query)
+            is MainActions.SetFromDate -> setFromDate(action.fromDate)
+            is MainActions.SetToDate -> setToDate(action.toDate)
+            is MainActions.SetSortBy -> setSortBy(action.sortBy)
         }
     }
 
@@ -63,19 +67,19 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
-    fun setQuery(text: String) {
+    private fun setQuery(text: String) {
         query = text
     }
 
-    fun setFromDate(date: String) {
+    private fun setFromDate(date: String) {
         fromDate.value = date
     }
 
-    fun setToDate(date: String) {
+    private fun setToDate(date: String) {
         toDate.value = date
     }
 
-    fun setSortBy(sort: String) {
+    private fun setSortBy(sort: String) {
         sortBy.value = sort
     }
 }
