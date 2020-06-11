@@ -21,6 +21,7 @@ import com.example.newsapp.ui.adapters.TopHeadlinesAdapter
 import com.example.newsapp.viewmodel.Action
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
+import io.reactivex.rxjava3.kotlin.ofType
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_top_headlines.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -51,7 +52,7 @@ class TopHeadlinesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        busEvent.ofType(Events.NewsClickEvent::class.java)
+        busEvent.ofType<Events.NewsClickEvent>()
             .autoDispose(scope())
             .subscribe {
                 val builder = CustomTabsIntent.Builder()
