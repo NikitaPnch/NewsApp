@@ -12,7 +12,7 @@ import com.example.newsapp.R
 import com.example.newsapp.api.model.APINews
 import com.example.newsapp.extensions.createImageRequest
 import com.facebook.drawee.view.SimpleDraweeView
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 
 class SearchAdapter(private val busEvent: PublishSubject<Any>) :
     RecyclerView.Adapter<BaseViewHolder>() {

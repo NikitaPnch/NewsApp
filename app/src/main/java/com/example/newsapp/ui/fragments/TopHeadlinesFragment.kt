@@ -9,6 +9,8 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import autodispose2.androidx.lifecycle.scope
+import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.extensions.getLocale
@@ -19,10 +21,7 @@ import com.example.newsapp.ui.adapters.TopHeadlinesAdapter
 import com.example.newsapp.viewmodel.Action
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
-import io.reactivex.rxkotlin.ofType
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_top_headlines.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -52,7 +51,7 @@ class TopHeadlinesFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        busEvent.ofType<Events.NewsClickEvent>()
+        busEvent.ofType(Events.NewsClickEvent::class.java)
             .autoDispose(scope())
             .subscribe {
                 val builder = CustomTabsIntent.Builder()

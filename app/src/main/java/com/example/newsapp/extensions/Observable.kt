@@ -2,8 +2,8 @@ package com.example.newsapp.extensions
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveDataReactiveStreams
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.core.Observable
 
 fun <T> Observable<T>.liveData(strategy: BackpressureStrategy = BackpressureStrategy.BUFFER) =
     LiveDataReactiveStreams.fromPublisher<T>(this.toFlowable(strategy))

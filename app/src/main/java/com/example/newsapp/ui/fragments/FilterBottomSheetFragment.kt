@@ -15,7 +15,7 @@ import com.example.newsapp.extensions.toQueryDate
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_filter.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.DateFormat

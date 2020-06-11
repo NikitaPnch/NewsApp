@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import autodispose2.androidx.lifecycle.scope
+import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.extensions.hideKeyboard
@@ -19,12 +21,10 @@ import com.example.newsapp.ui.adapters.SearchAdapter
 import com.example.newsapp.viewmodel.Action
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
-import com.jakewharton.rxbinding3.view.clicks
-import com.jakewharton.rxbinding3.widget.textChanges
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
-import io.reactivex.rxkotlin.ofType
-import io.reactivex.subjects.PublishSubject
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.widget.textChanges
+import io.reactivex.rxjava3.kotlin.ofType
+import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -57,6 +57,7 @@ class SearchFragment : Fragment() {
 
         ll_select_filter
             .clicks()
+            .throttleFirst(500L, TimeUnit.MILLISECONDS)
             .liveDataNotNull(this) {
                 showFilterFragment()
             }
