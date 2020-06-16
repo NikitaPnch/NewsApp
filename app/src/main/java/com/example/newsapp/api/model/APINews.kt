@@ -1,6 +1,6 @@
 package com.example.newsapp.api.model
 
-import com.example.newsapp.db.DBNews
+import com.example.newsapp.db.entities.DBNews
 
 data class APINews(
     val status: String,

@@ -13,24 +13,20 @@ import autodispose2.androidx.lifecycle.scope
 import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
-import com.example.newsapp.extensions.getLocale
 import com.example.newsapp.extensions.getTimestampFromString
-import com.example.newsapp.extensions.liveDataNotNull
 import com.example.newsapp.extensions.observeNotNull
-import com.example.newsapp.ui.adapters.TopHeadlinesAdapter
-import com.example.newsapp.viewmodel.Action
+import com.example.newsapp.ui.adapters.BookmarksAdapter
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
 import io.reactivex.rxjava3.kotlin.ofType
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_top_headlines.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 
-class TopHeadlinesFragment : Fragment() {
+class BookmarksFragment : Fragment() {
 
     private val model by sharedViewModel<MainViewModel>()
-    private lateinit var newsAdapter: TopHeadlinesAdapter
+    private lateinit var bookmarksAdapter: BookmarksAdapter
     private val busEvent = PublishSubject.create<Any>()
 
     override fun onCreateView(
@@ -45,7 +41,6 @@ class TopHeadlinesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecycler()
-        setupSwipeRefreshNews()
         setupObservers()
     }
 
@@ -66,12 +61,6 @@ class TopHeadlinesFragment : Fragment() {
                 customTabsIntent.launchUrl(this.requireActivity(), Uri.parse(it.url))
             }
 
-        busEvent.ofType<Events.AddArticleToBookmarks>()
-            .autoDispose(scope())
-            .subscribe {
-                model.send { MainActions.AddArticleToBookmarks(it.dbNews) }
-            }
-
         busEvent.ofType<Events.RemoveArticleFromBookmarks>()
             .autoDispose(scope())
             .subscribe {
@@ -80,37 +69,17 @@ class TopHeadlinesFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        model.topHeadlinesLiveData.observeNotNull(this) { unsortedList ->
+        model.bookmarksLiveData.observeNotNull(this) { unsortedList ->
             unsortedList.sortedByDescending { getTimestampFromString(it.publishedAt) }
                 .let { sortedList ->
-                    newsAdapter.setData(sortedList)
+                    bookmarksAdapter.setData(sortedList)
                 }
-        }
-
-        model.isLoading.observeNotNull(this) { isLoading ->
-            srl_refresh_news.isRefreshing = isLoading
-        }
-
-        model.listen<Action.Error>().liveDataNotNull(this) {
-            model.isLoading.value = false
-            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
-        }
-    }
-
-    private fun setupSwipeRefreshNews() {
-        srl_refresh_news.setOnRefreshListener {
-            getNews()
         }
     }
 
     private fun setupRecycler() {
         val layoutManager = LinearLayoutManager(this.requireActivity())
-        newsAdapter = TopHeadlinesAdapter(busEvent)
-        newsAdapter.appendTo(rv_news, layoutManager)
-    }
-
-    // получить новости
-    private fun getNews() {
-        model.send { MainActions.GetNews(getLocale(resources)) }
+        bookmarksAdapter = BookmarksAdapter(busEvent)
+        bookmarksAdapter.appendTo(rv_news, layoutManager)
     }
 }

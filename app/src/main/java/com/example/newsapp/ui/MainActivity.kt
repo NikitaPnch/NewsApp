@@ -9,6 +9,7 @@ import com.example.newsapp.extensions.ConnectionLiveData
 import com.example.newsapp.extensions.debounce
 import com.example.newsapp.extensions.getLocale
 import com.example.newsapp.extensions.observe
+import com.example.newsapp.ui.fragments.BookmarksFragment
 import com.example.newsapp.ui.fragments.SearchFragment
 import com.example.newsapp.ui.fragments.TopHeadlinesFragment
 import com.example.newsapp.viewmodel.MainActions
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var snackBar: Snackbar? = null
     private val topHeadlinesFragment by lazy { TopHeadlinesFragment() }
     private val searchFragment by lazy { SearchFragment() }
+    private val bookmarksFragment by lazy { BookmarksFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> replaceFragment(topHeadlinesFragment)
+                R.id.action_bookmarks -> replaceFragment(bookmarksFragment)
                 R.id.action_search -> replaceFragment(searchFragment)
                 else -> replaceFragment(topHeadlinesFragment)
             }

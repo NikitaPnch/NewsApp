@@ -5,8 +5,15 @@
     <item
         android:id="@+id/action_today"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_star_border_24"
+        android:icon="@drawable/selector_star"
         android:title="Сегодня"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_bookmarks"
+        android:enabled="true"
+        android:icon="@drawable/selector_bookmark"
+        android:title="Закладки"
         app:showAsAction="ifRoom" />
 
     <item

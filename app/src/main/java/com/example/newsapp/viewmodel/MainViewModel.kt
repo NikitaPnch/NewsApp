@@ -1,10 +1,14 @@
 package com.example.newsapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.newsapp.api.API
 import com.example.newsapp.api.model.APINews
+import com.example.newsapp.db.entities.DBNews
+import com.example.newsapp.db.repositories.BookmarkRepository
 import com.example.newsapp.db.repositories.NewsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
 
@@ -12,8 +16,10 @@ class MainViewModel : BaseViewModel() {
 
     private val api by lazy { API() }
     private var totalResults: Int? = null
-    private var repository: NewsRepository = NewsRepository()
-    var topHeadlinesLiveData = repository.newsListLiveData
+    private var newsRepository: NewsRepository = NewsRepository()
+    private var bookmarkRepository: BookmarkRepository = BookmarkRepository()
+    var topHeadlinesLiveData = newsRepository.newsListLiveData
+    var bookmarksLiveData = bookmarkRepository.bookmarkListLiveData
     val searchLiveData = MutableLiveData(emptyList<APINews.Article>())
     val isLoading = MutableLiveData(false)
     val isLoadingSearch = MutableLiveData(false)
@@ -33,6 +39,8 @@ class MainViewModel : BaseViewModel() {
             is MainActions.SetFromDate -> setFromDate(action.fromDate)
             is MainActions.SetToDate -> setToDate(action.toDate)
             is MainActions.SetSortBy -> setSortBy(action.sortBy)
+            is MainActions.AddArticleToBookmarks -> addArticleToBookmarks(action.dbNews)
+            is MainActions.RemoveArticleFromBookmarks -> removeArticleFromBookmarks(action.url)
         }
     }
 
@@ -40,7 +48,7 @@ class MainViewModel : BaseViewModel() {
         isLoading.value = true
         withContext(Dispatchers.IO) {
             api.news.getTopHeadlines(country).await().let {
-                repository.updateNews(it.articles)
+                newsRepository.updateNews(it.articles)
                 withContext(Dispatchers.Main) {
                     totalResults = it.totalResults
                     isLoading.value = false
@@ -82,4 +90,14 @@ class MainViewModel : BaseViewModel() {
     private fun setSortBy(sort: String) {
         sortBy.value = sort
     }
+
+    private suspend fun addArticleToBookmarks(dbNews: DBNews) =
+        viewModelScope.launch(Dispatchers.IO) {
+            bookmarkRepository.insertBookmark(dbNews)
+        }
+
+    private suspend fun removeArticleFromBookmarks(url: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            bookmarkRepository.deleteBookmarkByUrl(url)
+        }
 }

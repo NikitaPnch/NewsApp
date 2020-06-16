@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.Events
 import com.example.newsapp.R
-import com.example.newsapp.db.views.NewsWithBookmarks
+import com.example.newsapp.db.entities.DBBookmark
 import com.example.newsapp.extensions.createImageRequest
 import com.facebook.drawee.view.SimpleDraweeView
 import io.reactivex.rxjava3.subjects.PublishSubject
 
-class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
+class BookmarksAdapter(private val busEvent: PublishSubject<Any>) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
-    private var articles: List<NewsWithBookmarks> = emptyList()
+    private var articles: List<DBBookmark> = emptyList()
     private lateinit var recyclerView: RecyclerView
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
@@ -49,11 +49,7 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
                 divider.visibility = View.VISIBLE
             }
 
-            if (article.isBookmarked) {
-                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
-            } else {
-                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
-            }
+            imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
 
             newsHeader.text = article.title
 
@@ -65,13 +61,8 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
             }
 
             bookmarkContainer.setOnClickListener {
-                if (article.isBookmarked) {
-                    imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
-                    busEvent.onNext(Events.RemoveArticleFromBookmarks(article.url))
-                } else {
-                    imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
-                    busEvent.onNext(Events.AddArticleToBookmarks(article))
-                }
+                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
+                busEvent.onNext(Events.RemoveArticleFromBookmarks(article.url))
             }
 
             newsContainer.setOnClickListener {
@@ -99,7 +90,7 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
         holder.onBind(position)
     }
 
-    fun setData(articles: List<NewsWithBookmarks>) {
+    fun setData(articles: List<DBBookmark>) {
         this.articles = articles
         notifyDataSetChanged()
     }

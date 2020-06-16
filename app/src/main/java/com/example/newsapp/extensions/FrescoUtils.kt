@@ -14,7 +14,6 @@ fun SimpleDraweeView.createImageRequest(uri: String) {
         .setResizeOptions(ResizeOptions(480, 480))
         .setRequestPriority(Priority.HIGH)
         .setProgressiveRenderingEnabled(true)
-        .setPostprocessor(FastGreyPostProcessor())
         .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
         .build()
 
