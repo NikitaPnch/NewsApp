@@ -19,55 +19,34 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
 
     private var articles: List<APINews.Article> = emptyList()
     private lateinit var recyclerView: RecyclerView
-    private var isLoaderVisible = false
-
-    companion object {
-        private const val TYPE_NEWS = 0
-        private const val TYPE_LOADING = 1
-    }
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
         private val newsContainer: ConstraintLayout =
             itemView.findViewById(R.id.cl_search_item_container)
-        private val newsImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_search_image)
-        private val newsHeader: TextView = itemView.findViewById(R.id.tv_search_title)
-        private val newsContent: TextView = itemView.findViewById(R.id.tv_search_description)
+        private val articleImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_search_image)
+        private val articleHeader: TextView = itemView.findViewById(R.id.tv_search_header)
+        private val articleDescription: TextView = itemView.findViewById(R.id.tv_search_description)
 
         override fun onBind(position: Int) {
             super.onBind(position)
             val article = articles[position]
 
-            article.urlToImage?.let {
-                newsImage.visibility = View.VISIBLE
-                newsImage.createImageRequest(article.urlToImage)
-            } ?: let {
-                newsImage.visibility = View.GONE
-            }
-
-            newsHeader.text = article.title
-            newsContent.text = article.description
-            newsContainer.setOnClickListener {
-                busEvent.onNext(
-                    Events.NewsClickEvent(
-                        article.url
-                    )
-                )
+            article.apply {
+                setupArticleImage(articleImage)
+                setupArticleHeader(articleHeader)
+                setupArticleDescription(articleDescription)
+                setupClickNewsContainer(newsContainer)
             }
         }
     }
 
-    inner class ProgressHolder(itemView: View) : BaseViewHolder(itemView)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            TYPE_NEWS -> ViewHolder(
-                inflater.inflate(
-                    R.layout.item_search, parent, false
-                )
+        return ViewHolder(
+            inflater.inflate(
+                R.layout.item_search, parent, false
             )
-            else -> ProgressHolder(inflater.inflate(R.layout.item_loading, parent, false))
-        }
+        )
     }
 
     override fun getItemCount(): Int = articles.size
@@ -76,20 +55,43 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
         holder.onBind(position)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (isLoaderVisible) {
-            if (position == articles.size - 1) TYPE_LOADING else TYPE_NEWS
-        } else TYPE_NEWS
-    }
-
+    // устанавливает данные
     fun setData(articles: List<APINews.Article>) {
         this.articles = articles
         notifyDataSetChanged()
     }
 
+    // привязывает адаптер к переданному recycler
     fun appendTo(recyclerView: RecyclerView, layoutManager: LinearLayoutManager) {
         this.recyclerView = recyclerView
         this.recyclerView.layoutManager = layoutManager
         this.recyclerView.adapter = this
+    }
+
+    // устанавливает изображение новости
+    private fun APINews.Article.setupArticleImage(articleImage: SimpleDraweeView) {
+        urlToImage?.let {
+            articleImage.visibility = View.VISIBLE
+            articleImage.createImageRequest(urlToImage)
+        } ?: let {
+            articleImage.visibility = View.GONE
+        }
+    }
+
+    // устанавливает заголовок новости
+    private fun APINews.Article.setupArticleHeader(articleHeader: TextView) {
+        articleHeader.text = title
+    }
+
+    // устанавливает описание новости
+    private fun APINews.Article.setupArticleDescription(articleDescription: TextView) {
+        articleDescription.text = title
+    }
+
+    // устанавливает нажатие на новость
+    private fun APINews.Article.setupClickNewsContainer(newsContainer: ConstraintLayout) {
+        newsContainer.setOnClickListener {
+            busEvent.onNext(Events.ArticleClickEvent(url))
+        }
     }
 }

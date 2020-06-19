@@ -1,12 +1,9 @@
 package com.example.newsapp.ui.fragments
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodispose2.androidx.lifecycle.scope
@@ -15,6 +12,7 @@ import com.example.newsapp.Events
 import com.example.newsapp.R
 import com.example.newsapp.extensions.getTimestampFromString
 import com.example.newsapp.extensions.observeNotNull
+import com.example.newsapp.extensions.openUrlInCustomTabs
 import com.example.newsapp.ui.adapters.BookmarksAdapter
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
@@ -47,20 +45,20 @@ class BookmarksFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        busEvent.ofType<Events.NewsClickEvent>()
+        setupBusEvents()
+    }
+
+    // устанавливает обработку событий шины
+    private fun setupBusEvents() {
+
+        // нажатие по новости
+        busEvent.ofType<Events.ArticleClickEvent>()
             .autoDispose(scope())
             .subscribe {
-                val builder = CustomTabsIntent.Builder()
-                builder.setToolbarColor(
-                    ContextCompat.getColor(
-                        this.requireActivity(),
-                        R.color.colorWhite
-                    )
-                )
-                val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(this.requireActivity(), Uri.parse(it.url))
+                openUrlInCustomTabs(this.requireActivity(), it.url)
             }
 
+        // удаление новости из закладок
         busEvent.ofType<Events.RemoveArticleFromBookmarks>()
             .autoDispose(scope())
             .subscribe {
@@ -68,6 +66,7 @@ class BookmarksFragment : Fragment() {
             }
     }
 
+    // устанавливает наблюдатель закладок и их изменение в бд
     private fun setupObservers() {
         model.bookmarksLiveData.observeNotNull(this) { unsortedList ->
             unsortedList.sortedByDescending { getTimestampFromString(it.publishedAt) }
@@ -77,6 +76,7 @@ class BookmarksFragment : Fragment() {
         }
     }
 
+    // настраивает recycler
     private fun setupRecycler() {
         val layoutManager = LinearLayoutManager(this.requireActivity())
         bookmarksAdapter = BookmarksAdapter(busEvent)

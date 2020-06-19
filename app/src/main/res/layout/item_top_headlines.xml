@@ -42,7 +42,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_news_content"
+        android:id="@+id/tv_news_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -67,7 +67,7 @@
         android:background="@drawable/bg_gray_with_corners"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_news_content" />
+        app:layout_constraintTop_toBottomOf="@id/tv_news_description" />
 
     <View
         android:id="@+id/view_item_divider"

@@ -9,6 +9,7 @@ interface MainActions : Action {
     class SetFromDate(val fromDate: String) : MainActions
     class SetToDate(val toDate: String) : MainActions
     class SetSortBy(val sortBy: String) : MainActions
+    class ClearAllFilters : MainActions
     class AddArticleToBookmarks(val dbNews: DBNews) : MainActions
     class RemoveArticleFromBookmarks(val url: String) : MainActions
 }

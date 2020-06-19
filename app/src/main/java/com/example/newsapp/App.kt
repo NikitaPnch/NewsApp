@@ -15,12 +15,5 @@ class App : Application() {
         startKoin {
             modules(appModule)
         }
-
-//        //alternatively
-//        TinyDancer.create()
-//            .redFlagPercentage(.1f) // set red indicator for 10%....different from default
-//            .startingXPosition(200)
-//            .startingYPosition(600)
-//            .show(this)
     }
 }

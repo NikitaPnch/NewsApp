@@ -24,6 +24,7 @@ data class APINews(
     }
 }
 
+// меняет модель api в модель базы данных
 fun List<APINews.Article>.asDatabaseModel(): List<DBNews> {
     return map {
         DBNews(

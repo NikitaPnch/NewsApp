@@ -1,9 +1,20 @@
 <resources>
     <string name="app_name">NewsApp</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
+    <string name="show_results">Показать результаты</string>
+    <string name="from">От</string>
+    <string name="to">До</string>
+    <string name="sorted_by">Отсортировать по</string>
+    <string name="clear">Очистить</string>
+    <string name="filters">Фильтры</string>
+    <string name="date">Дата</string>
+    <string name="search">Поиск</string>
+    <string name="error_message">Произошла ошибка, попробуйте повторить позже</string>
+
     <string-array name="filterNames">
         <item>Дате публикации</item>
         <item>Популярности</item>
         <item>Актуальности</item>
     </string-array>
+
 </resources>

@@ -9,8 +9,10 @@ class BookmarkRepository {
 
     private val bookmarkDao = AppDatabase.INSTANCE.bookmarkDao()
 
+    // хранит записи из таблицы в формате liveData
     val bookmarkListLiveData: LiveData<List<DBBookmark>> = bookmarkDao.queryBookmarks()
 
+    // вставить закладку в таблицу
     suspend fun insertBookmark(dbNews: DBNews) {
         val dbBookmark = DBBookmark(
             url = dbNews.url,
@@ -28,6 +30,7 @@ class BookmarkRepository {
         bookmarkDao.insertBookmark(dbBookmark)
     }
 
+    // удалить закладку из таблицы по url
     suspend fun deleteBookmarkByUrl(url: String) {
         bookmarkDao.deleteBookmarkByUrl(url)
     }

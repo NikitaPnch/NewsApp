@@ -1,12 +1,9 @@
 package com.example.newsapp.ui.fragments
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,22 +11,16 @@ import autodispose2.androidx.lifecycle.scope
 import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
-import com.example.newsapp.extensions.hideKeyboard
-import com.example.newsapp.extensions.liveDataNotNull
-import com.example.newsapp.extensions.observeNotNull
+import com.example.newsapp.extensions.*
 import com.example.newsapp.ui.adapters.SearchAdapter
 import com.example.newsapp.viewmodel.Action
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
-import com.jakewharton.rxbinding4.view.clicks
-import com.jakewharton.rxbinding4.widget.textChanges
 import io.reactivex.rxjava3.kotlin.ofType
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment() {
 
@@ -48,52 +39,18 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setupRecycler()
         setupObservers()
-
-        model.listen<Action.Error>().liveDataNotNull(this) {
-            hideProgressBar()
-        }
-
-        ll_select_filter
-            .clicks()
-            .throttleFirst(500L, TimeUnit.MILLISECONDS)
-            .liveDataNotNull(this) {
-                showFilterFragment()
-            }
+        setupListeners()
+        setupClicks()
+        setupTextChanges()
     }
 
     override fun onResume() {
         super.onResume()
 
-        et_search.textChanges()
-            .map { query ->
-                query.toString().toLowerCase(Locale.getDefault()).trim()
-            }
-            .debounce(500L, TimeUnit.MILLISECONDS)
-            .distinctUntilChanged()
-            .filter { query ->
-                query.isNotBlank()
-            }
-            .autoDispose(scope())
-            .subscribe { query ->
-                model.send { MainActions.SetQuery(query) }
-                model.send { MainActions.SearchNews() }
-            }
-
-        busEvent.ofType<Events.NewsClickEvent>()
-            .autoDispose(scope())
-            .subscribe {
-                val builder = CustomTabsIntent.Builder()
-                builder.setToolbarColor(
-                    ContextCompat.getColor(
-                        this.requireActivity(),
-                        R.color.colorWhite
-                    )
-                )
-                val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(this.requireActivity(), Uri.parse(it.url))
-            }
+        setupBusEvents()
     }
 
     private fun setupRecycler() {
@@ -112,39 +69,76 @@ class SearchFragment : Fragment() {
         })
     }
 
+    // установка слушателей
+    private fun setupListeners() {
+
+        // слушатель ошибки viewmodel - скрывает прогресс загрузки
+        model.listen<Action.Error>().liveDataNotNull(this) {
+            main_bar_search.hideProgressBar()
+            this.requireContext().showToastMessage(R.string.error_message)
+            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
+        }
+    }
+
+    // настройка нажатий в текущем фрагменте
+    private fun setupClicks() {
+
+        // кнопка вызывает диалог с фильтрами
+        main_bar_search.setupFilterClicks(this) {
+            showFilterFragment()
+        }
+    }
+
+    // устанавливает слушатель шины событий
+    private fun setupBusEvents() {
+
+        // событие нажатия на новость
+        busEvent.ofType<Events.ArticleClickEvent>()
+            .autoDispose(scope())
+            .subscribe {
+                openUrlInCustomTabs(this.requireActivity(), it.url)
+            }
+    }
+
+    // установка слушателей изменения текста
+    private fun setupTextChanges() {
+
+        // слушатель изменения текста в поиске
+        main_bar_search.setupTextChanges(this) {
+            model.send { MainActions.SetQuery(it) }
+            model.send { MainActions.SearchNews() }
+        }
+    }
+
+    // показывает диалог с фильтрами
     private fun showFilterFragment() {
         filterDialog.show(parentFragmentManager, "filter_dialog")
     }
 
+    // установка наблюдателей
     private fun setupObservers() {
 
+        // слушает изменения результатов поиска и обновляет список adapter
         model.searchLiveData.observeNotNull(this) {
             it.let { sortedList ->
                 searchAdapter.setData(sortedList)
             }
         }
 
+        // слушает состояние загрузки поиска и показывает preloader
         model.isLoadingSearch.observeNotNull(this) {
             if (it) {
-                showProgressBar()
+                main_bar_search.showProgressBar()
             } else {
-                hideProgressBar()
+                main_bar_search.hideProgressBar()
             }
         }
 
+        // слушает ошибки viewmodel и показывает сообщение с ошибкой
         model.listen<Action.Error>().liveDataNotNull(this) {
-            model.isLoading.value = false
+            model.isLoadingSearch.value = false
+            this.requireContext().showToastMessage(R.string.error_message)
             Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
-    }
-
-    private fun showProgressBar() {
-        ll_select_filter.visibility = View.GONE
-        progress_search.visibility = View.VISIBLE
-    }
-
-    private fun hideProgressBar() {
-        ll_select_filter.visibility = View.VISIBLE
-        progress_search.visibility = View.GONE
     }
 }

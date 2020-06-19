@@ -12,11 +12,11 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@drawable/bg_gray_with_corners"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_search_title"
+        android:id="@+id/tv_search_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -25,8 +25,8 @@
         android:maxLines="2"
         android:textColor="@color/colorBlackHeader"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/sdv_search_image"
+        app:layout_constraintEnd_toStartOf="@id/sdv_search_image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -40,8 +40,8 @@
         android:textColor="@color/colorBlackText"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/sdv_search_image"
-        app:layout_constraintTop_toBottomOf="@id/tv_search_title" />
+        app:layout_constraintEnd_toStartOf="@id/sdv_search_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_search_header" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

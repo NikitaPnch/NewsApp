@@ -37,13 +37,25 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val arrayString = resources.getStringArray(R.array.filterNames)
+        setupSpinner()
+        setupClicks()
+        setupObservers()
+    }
+
+    // настраивает spinner
+    private fun setupSpinner() {
+
+        // переменная хранит список названий фильтров
+        val arrayFilterNames = resources.getStringArray(R.array.filterNames)
+
+        // создаем карту пар названий фильтров и их значения из апи
         val map = mapOf(
-            arrayString[0] to API.PUBLISHED_AT,
-            arrayString[1] to API.POPULARITY,
-            arrayString[2] to API.RELEVANCY
+            arrayFilterNames[0] to API.PUBLISHED_AT,
+            arrayFilterNames[1] to API.POPULARITY,
+            arrayFilterNames[2] to API.RELEVANCY
         )
 
+        // установка слушателя выбранного элемента
         spinner_filter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
@@ -54,19 +66,46 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
                 position: Int,
                 id: Long
             ) {
+                // ставим во ViewModel новое значение
                 model.send {
                     MainActions.SetSortBy(
-                        map[arrayString[position]] ?: error("No Such Filter")
+                        map[arrayFilterNames[position]] ?: error("No Such Filter")
                     )
                 }
             }
         }
+    }
 
+    // настраивает все клики в текущем фрагменте
+    private fun setupClicks() {
+
+        // кнопка "очистить фильтры"
         tv_clear.clicks().liveDataNotNull(this) {
             clearFilters()
             hideClearButton()
         }
 
+        // кнопка "настройки даты от определенного числа"
+        tv_from_date.clicks().liveDataNotNull(this) {
+            showDatePickerDialog(calendar, getDatePickerListener(true))
+        }
+
+        // кнопка "настройки даты до определенного числа"
+        tv_to_date.clicks().liveDataNotNull(this) {
+            showDatePickerDialog(calendar, getDatePickerListener(false))
+        }
+
+        // кнопка "показать результаты с текущими фильтрами"
+        tv_show_result.clicks().liveDataNotNull(this) {
+            dismiss()
+            model.send { MainActions.SearchNews() }
+        }
+    }
+
+    // установка наблюдателей
+    private fun setupObservers() {
+
+        // слушает изменение даты от определенного числа
         model.fromDate.observeNotNull(this) {
             if (it.isNotBlank()) {
                 showClearButton()
@@ -80,6 +119,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
             }
         }
 
+        // слушает изменение даты до определенного числа
         model.toDate.observeNotNull(this) {
             if (it.isNotBlank()) {
                 showClearButton()
@@ -92,30 +132,17 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
                 )
             }
         }
-
-        tv_from_date.clicks().liveDataNotNull(this) {
-            showDatePickerDialog(calendar, getDatePickerListener(true))
-        }
-
-        tv_to_date.clicks().liveDataNotNull(this) {
-            showDatePickerDialog(calendar, getDatePickerListener(false))
-        }
-
-        tv_show_result.clicks().liveDataNotNull(this) {
-            dismiss()
-            model.send { MainActions.SearchNews() }
-        }
     }
 
+    // очищает фильтры
     private fun clearFilters() {
-        tv_from_date.text = "От"
-        tv_to_date.text = "До"
+        tv_from_date.text = resources.getString(R.string.from)
+        tv_to_date.text = resources.getString(R.string.to)
         spinner_filter.setSelection(0)
-        model.sortBy.value = API.PUBLISHED_AT
-        model.fromDate.value = null
-        model.toDate.value = null
+        model.send { MainActions.ClearAllFilters() }
     }
 
+    // получает настроенный слушатель выбора даты
     private fun getDatePickerListener(
         isFromDate: Boolean
     ): DatePickerDialog.OnDateSetListener {
@@ -128,6 +155,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
+    // установка даты в textView на выбор
     private fun setDateToTextView(textView: TextView, year: Int, month: Int, dayOfMonth: Int) {
         val calendar = Calendar.getInstance(TimeZone.getDefault())
         val dateFormat = DateFormat.getInstance()
@@ -135,6 +163,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
         textView.text = dateFormat.format(calendar.time).split(" ").first()
     }
 
+    // показывает пользователю диалог с выбором даты
     private fun showDatePickerDialog(
         calendar: Calendar,
         listener: DatePickerDialog.OnDateSetListener
@@ -150,10 +179,12 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
         }.show()
     }
 
+    // показывает пользователю кнопку очистить
     private fun showClearButton() {
         tv_clear.visibility = View.VISIBLE
     }
 
+    // скрывает от пользователя кнопку очистить
     private fun hideClearButton() {
         tv_clear.visibility = View.GONE
     }

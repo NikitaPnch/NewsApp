@@ -23,11 +23,11 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
     private lateinit var recyclerView: RecyclerView
 
     inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
-        private val newsContainer: ConstraintLayout =
+        private val articleContainer: ConstraintLayout =
             itemView.findViewById(R.id.cl_news_item_container)
-        private val newsImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_image_news)
-        private val newsHeader: TextView = itemView.findViewById(R.id.tv_header_news)
-        private val newsContent: TextView = itemView.findViewById(R.id.tv_news_content)
+        private val articleImage: SimpleDraweeView = itemView.findViewById(R.id.sdv_image_news)
+        private val articleHeader: TextView = itemView.findViewById(R.id.tv_header_news)
+        private val articleDescription: TextView = itemView.findViewById(R.id.tv_news_description)
         private val bookmarkContainer: LinearLayout = itemView.findViewById(R.id.ll_bookmark)
         private val imageBookmark: ImageView = itemView.findViewById(R.id.iv_bookmark)
         private val divider: View = itemView.findViewById(R.id.view_item_divider)
@@ -36,50 +36,14 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
             super.onBind(position)
             val article = articles[position]
 
-            if (article.urlToImage.isNullOrBlank()) {
-                newsImage.visibility = View.GONE
-            } else {
-                newsImage.visibility = View.VISIBLE
-                newsImage.createImageRequest(article.urlToImage!!)
-            }
-
-            if (articles.last() == article) {
-                divider.visibility = View.GONE
-            } else {
-                divider.visibility = View.VISIBLE
-            }
-
-            if (article.isBookmarked) {
-                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
-            } else {
-                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
-            }
-
-            newsHeader.text = article.title
-
-            if (article.description.isNullOrBlank()) {
-                newsContent.visibility = View.GONE
-            } else {
-                newsContent.visibility = View.VISIBLE
-                newsContent.text = article.description
-            }
-
-            bookmarkContainer.setOnClickListener {
-                if (article.isBookmarked) {
-                    imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
-                    busEvent.onNext(Events.RemoveArticleFromBookmarks(article.url))
-                } else {
-                    imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
-                    busEvent.onNext(Events.AddArticleToBookmarks(article))
-                }
-            }
-
-            newsContainer.setOnClickListener {
-                busEvent.onNext(
-                    Events.NewsClickEvent(
-                        article.url
-                    )
-                )
+            article.apply {
+                setupArticleImage(articleImage)
+                setupArticleDivider(divider)
+                setupIsBookmarked(imageBookmark)
+                setupArticleHeader(articleHeader)
+                setupArticleDescription(articleDescription)
+                setupClicksBookmarkContainer(bookmarkContainer, imageBookmark)
+                setupClicksArticleContainer(articleContainer)
             }
         }
     }
@@ -99,14 +63,80 @@ class TopHeadlinesAdapter(private val busEvent: PublishSubject<Any>) :
         holder.onBind(position)
     }
 
+    // установка данных
     fun setData(articles: List<NewsWithBookmarks>) {
         this.articles = articles
         notifyDataSetChanged()
     }
 
+    // привязывает adapter к текущему recycler
     fun appendTo(recyclerView: RecyclerView, layoutManager: LinearLayoutManager) {
         this.recyclerView = recyclerView
         this.recyclerView.layoutManager = layoutManager
         this.recyclerView.adapter = this
+    }
+
+    // устанавливает изображение новости
+    private fun NewsWithBookmarks.setupArticleImage(articleImage: SimpleDraweeView) {
+        if (urlToImage.isNullOrBlank()) {
+            articleImage.visibility = View.GONE
+        } else {
+            articleImage.visibility = View.VISIBLE
+            articleImage.createImageRequest(urlToImage!!)
+        }
+    }
+
+    // устанавливает разделитель новостей
+    private fun NewsWithBookmarks.setupArticleDivider(divider: View) {
+        if (articles.last() == this) {
+            divider.visibility = View.INVISIBLE
+        } else {
+            divider.visibility = View.VISIBLE
+        }
+    }
+
+    // устанавливает кнопку закладки в положение включено
+    private fun NewsWithBookmarks.setupIsBookmarked(imageBookmark: ImageView) {
+        if (isBookmarked) {
+            imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
+        } else {
+            imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
+        }
+    }
+
+    // устанавливает заголовок новости
+    private fun NewsWithBookmarks.setupArticleHeader(articleHeader: TextView) {
+        articleHeader.text = title
+    }
+
+    // устанавливает описание новости новости
+    private fun NewsWithBookmarks.setupArticleDescription(articleDescription: TextView) {
+        if (description.isNullOrBlank()) {
+            articleDescription.visibility = View.GONE
+        } else {
+            articleDescription.visibility = View.VISIBLE
+            articleDescription.text = description
+        }
+    }
+
+    // устанавливает нажатие по кнопке закладки
+    private fun NewsWithBookmarks.setupClicksBookmarkContainer(
+        bookmarkContainer: LinearLayout,
+        imageBookmark: ImageView
+    ) {
+        bookmarkContainer.setOnClickListener {
+            if (isBookmarked) {
+                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_border_24)
+                busEvent.onNext(Events.RemoveArticleFromBookmarks(url))
+            } else {
+                imageBookmark.setImageResource(R.drawable.ic_baseline_bookmark_24)
+                busEvent.onNext(Events.AddArticleToBookmarks(this))
+            }
+        }
+    }
+
+    // устанавливает нажатие по новости
+    private fun NewsWithBookmarks.setupClicksArticleContainer(articleContainer: ConstraintLayout) {
+        articleContainer.setOnClickListener { busEvent.onNext(Events.ArticleClickEvent(url)) }
     }
 }

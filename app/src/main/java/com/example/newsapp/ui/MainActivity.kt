@@ -7,7 +7,7 @@ import androidx.lifecycle.distinctUntilChanged
 import com.example.newsapp.R
 import com.example.newsapp.extensions.ConnectionLiveData
 import com.example.newsapp.extensions.debounce
-import com.example.newsapp.extensions.getLocale
+import com.example.newsapp.extensions.getLocaleCountry
 import com.example.newsapp.extensions.observe
 import com.example.newsapp.ui.fragments.BookmarksFragment
 import com.example.newsapp.ui.fragments.SearchFragment
@@ -31,11 +31,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        replaceFragment(topHeadlinesFragment)
+        setupNetworkConnectionLiveData()
+        setupBottomNavigation()
+    }
 
+    // устанавливает слушатель интернет соединения
+    private fun setupNetworkConnectionLiveData() {
         ConnectionLiveData(this)
             .distinctUntilChanged()
-            .debounce(1000L)
+            .debounce()
             .observe(this) { isConnected ->
                 isConnected?.let {
                     showNetworkMessage(it)
@@ -44,7 +48,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+    }
 
+    // настраивает BottomNavigationView для переключения фрагментов между собой
+    private fun setupBottomNavigation() {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> replaceFragment(topHeadlinesFragment)
@@ -54,19 +61,23 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        bottom_navigation.selectedItemId = R.id.action_today
     }
 
+    // заменяет фрагменты
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_container, fragment)
         }.commit()
     }
 
-    // получить новости
+    // отправляет запрос на получение новостей
     private fun getNews() {
-        model.send { MainActions.GetNews(getLocale(resources)) }
+        model.send { MainActions.GetNews(getLocaleCountry(resources)) }
     }
 
+    // показывает сообщение о состоянии интернет соединения
     private fun showNetworkMessage(isConnected: Boolean) {
         if (!isConnected) {
             snackBar = Snackbar.make(

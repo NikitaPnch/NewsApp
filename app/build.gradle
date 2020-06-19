@@ -98,8 +98,6 @@ dependencies {
     // Saved state module for ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
-    // Annotation processor
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
@@ -118,8 +116,6 @@ dependencies {
     def splitties_version="3.0.0-alpha06"
     implementation "com.louiscad.splitties:splitties-appctx:$splitties_version"
 
-    implementation 'me.relex:circleindicator:1.2.2@aar'
-
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -130,10 +126,6 @@ dependencies {
     implementation 'com.uber.autodispose2:autodispose-lifecycle:2.0.0'
     implementation 'com.uber.autodispose2:autodispose-androidx-lifecycle:2.0.0'
     implementation 'com.uber.autodispose2:autodispose-android:2.0.0'
-
-    debugImplementation "com.github.brianPlummer:tinydancer:0.1.2"
-    releaseImplementation "com.github.brianPlummer:tinydancer-noop:0.1.2"
-    testImplementation "com.github.brianPlummer:tinydancer-noop:0.1.2"
 
     implementation 'com.android.support:customtabs:29.0.2'
 

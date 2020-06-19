@@ -60,7 +60,7 @@ class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
             }
             return connectivityManagerCallback
         } else {
-            throw IllegalAccessError("Should not happened")
+            throw IllegalAccessError("Увы и ах")
         }
     }
 

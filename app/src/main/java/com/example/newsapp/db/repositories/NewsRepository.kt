@@ -12,6 +12,7 @@ class NewsRepository {
 
     val newsListLiveData: LiveData<List<NewsWithBookmarks>> = newsDao.queryNews()
 
+    // перезагрузить список новостей
     suspend fun updateNews(article: List<APINews.Article>) {
         newsDao.updateNews(article.asDatabaseModel())
     }
