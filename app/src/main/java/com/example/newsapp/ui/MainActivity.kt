@@ -1,6 +1,7 @@
 package com.example.newsapp.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.distinctUntilChanged
@@ -54,9 +55,20 @@ class MainActivity : AppCompatActivity() {
     private fun setupBottomNavigation() {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.action_today -> replaceFragment(topHeadlinesFragment)
-                R.id.action_bookmarks -> replaceFragment(bookmarksFragment)
-                R.id.action_search -> replaceFragment(searchFragment)
+                R.id.action_today -> {
+                    renameBar(R.string.news)
+                    showMainBarWithAnim()
+                    replaceFragment(topHeadlinesFragment)
+                }
+                R.id.action_bookmarks -> {
+                    renameBar(R.string.bookmarks)
+                    showMainBarWithAnim()
+                    replaceFragment(bookmarksFragment)
+                }
+                R.id.action_search -> {
+                    hideMainBarWithAnim()
+                    replaceFragment(searchFragment)
+                }
                 else -> replaceFragment(topHeadlinesFragment)
             }
             true
@@ -90,5 +102,40 @@ class MainActivity : AppCompatActivity() {
         } else {
             snackBar?.dismiss()
         }
+    }
+
+    // скрывает main bar с анимацией
+    private fun hideMainBarWithAnim() {
+        if (main_bar.visibility == View.VISIBLE) {
+            main_bar.animate().apply {
+                translationY(-main_bar.height.toFloat())
+                withEndAction {
+                    main_bar.visibility = View.GONE
+                }
+                startDelay = 100
+                duration = 500
+                start()
+            }
+        }
+    }
+
+    // показывает main bar с анимацией
+    private fun showMainBarWithAnim() {
+        if (main_bar.visibility == View.GONE) {
+            main_bar.animate().apply {
+                translationYBy(main_bar.height.toFloat())
+                withStartAction {
+                    main_bar.visibility = View.VISIBLE
+                }
+                startDelay = 100
+                duration = 500
+                start()
+            }
+        }
+    }
+
+    // переименовывает main bar
+    private fun renameBar(name: Int) {
+        main_bar_text.text = resources.getString(name)
     }
 }

@@ -9,7 +9,7 @@ import com.example.newsapp.R
 import com.example.newsapp.extensions.liveDataNotNull
 import com.jakewharton.rxbinding4.view.clicks
 import com.jakewharton.rxbinding4.widget.textChanges
-import kotlinx.android.synthetic.main.search_view.view.*
+import kotlinx.android.synthetic.main.view_search.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -18,7 +18,7 @@ class SearchView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     init {
-        View.inflate(context, R.layout.search_view, this)
+        View.inflate(context, R.layout.view_search, this)
     }
 
     fun setupTextChanges(lifecycleOwner: LifecycleOwner, action: (query: String) -> Unit) {

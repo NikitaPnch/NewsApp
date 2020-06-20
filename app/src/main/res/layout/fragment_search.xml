@@ -9,6 +9,17 @@
     android:background="@color/colorWhite"
     tools:context=".ui.MainActivity">
 
+    <com.example.newsapp.ui.customviews.EmptyView
+        android:id="@+id/empty_view_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:image="@drawable/ic_baseline_search_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:text="Нет результатов" />
+
     <com.example.newsapp.ui.customviews.SearchView
         android:id="@+id/main_bar_search"
         android:layout_width="match_parent"

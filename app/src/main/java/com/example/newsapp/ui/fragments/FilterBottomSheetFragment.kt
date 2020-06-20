@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.TextView
 import com.example.newsapp.R
 import com.example.newsapp.api.API
+import com.example.newsapp.extensions.getLocaleLanguage
 import com.example.newsapp.extensions.liveDataNotNull
 import com.example.newsapp.extensions.observeNotNull
 import com.example.newsapp.extensions.toQueryDate
@@ -98,7 +99,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
         // кнопка "показать результаты с текущими фильтрами"
         tv_show_result.clicks().liveDataNotNull(this) {
             dismiss()
-            model.send { MainActions.SearchNews() }
+            model.send { MainActions.SearchNews(getLocaleLanguage(resources)) }
         }
     }
 

@@ -36,7 +36,7 @@ class MainViewModel : BaseViewModel() {
 
         when (action) {
             is MainActions.GetNews -> getTopHeadlines(action.country)
-            is MainActions.SearchNews -> searchEverything()
+            is MainActions.SearchNews -> searchEverything(action.country)
             is MainActions.SetQuery -> setQuery(action.query)
             is MainActions.SetFromDate -> setFromDate(action.fromDate)
             is MainActions.SetToDate -> setToDate(action.toDate)
@@ -62,14 +62,15 @@ class MainViewModel : BaseViewModel() {
     }
 
     // ищет любые новости с текущими фильтрами
-    private suspend fun searchEverything() {
+    private suspend fun searchEverything(country: String) {
         isLoadingSearch.value = true
         withContext(Dispatchers.IO) {
             api.news.searchEverything(
                 query,
                 sortBy.value,
                 fromDate.value,
-                toDate.value
+                toDate.value,
+                country
             ).await().let {
                 withContext(Dispatchers.Main) {
                     totalResults = it.totalResults

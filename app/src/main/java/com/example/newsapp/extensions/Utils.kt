@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
@@ -24,7 +25,23 @@ fun getTimestampFromString(dateStr: String): Long {
 
 // получить установленный язык на устройстве
 fun getLocaleCountry(resources: Resources): String {
-    return resources.configuration.locale.country
+    return resources.configuration.locale.country.toLowerCase(Locale.getDefault())
+}
+
+// получить установленный язык на устройстве
+fun getLocaleLanguage(resources: Resources): String {
+    return resources.configuration.locale.language.toLowerCase(Locale.getDefault())
+}
+
+// показать клавиатуру для выбранного editText
+fun Context.showKeyboardForEditText(editText: EditText) {
+    editText.requestFocus()
+    val imm: InputMethodManager =
+        getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(
+        InputMethodManager.SHOW_IMPLICIT,
+        InputMethodManager.HIDE_IMPLICIT_ONLY
+    )
 }
 
 // скрыть клавиатуру
@@ -45,15 +62,15 @@ fun toQueryDate(year: Int, month: Int, dayOfMonth: Int): String {
 
 // открывает ссылку внутри браузера в приложении
 fun openUrlInCustomTabs(context: Activity, url: String) {
-    val builder = CustomTabsIntent.Builder()
-    builder.addDefaultShareMenuItem()
-    builder.setToolbarColor(
-        ContextCompat.getColor(
-            context,
-            R.color.colorWhite
+    val customTabsIntent = CustomTabsIntent.Builder().apply {
+        addDefaultShareMenuItem()
+        setToolbarColor(
+            ContextCompat.getColor(
+                context,
+                R.color.colorWhite
+            )
         )
-    )
-    val customTabsIntent = builder.build()
+    }.build()
     customTabsIntent.launchUrl(context, Uri.parse(url))
 }
 
@@ -64,4 +81,13 @@ fun Context.showToastMessage(message: Int) {
         resources.getString(message),
         Toast.LENGTH_SHORT
     ).show()
+}
+
+// меняет видимость переданного view
+fun View.changeViewVisibility(needShow: Boolean) {
+    visibility = if (needShow) {
+        View.VISIBLE
+    } else {
+        View.GONE
+    }
 }

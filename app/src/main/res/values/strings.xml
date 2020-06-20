@@ -10,6 +10,8 @@
     <string name="date">Дата</string>
     <string name="search">Поиск</string>
     <string name="error_message">Произошла ошибка, попробуйте повторить позже</string>
+    <string name="news">Новости</string>
+    <string name="bookmarks">Закладки</string>
 
     <string-array name="filterNames">
         <item>Дате публикации</item>

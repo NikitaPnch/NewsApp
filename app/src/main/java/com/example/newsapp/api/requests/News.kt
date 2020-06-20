@@ -20,7 +20,7 @@ interface News {
         @Query("sortBy") sortBy: String? = API.PUBLISHED_AT,
         @Query("from") from: String? = null,
         @Query("to") to: String? = null,
-        @Query("language") language: String? = "ru",
+        @Query("language") language: String?,
         @Query("pageSize") pageSize: Int? = API.PAGE_SIZE
     ): Single<APINews>
 }

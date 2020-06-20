@@ -19,6 +19,8 @@ import com.example.newsapp.viewmodel.MainViewModel
 import io.reactivex.rxjava3.kotlin.ofType
 import io.reactivex.rxjava3.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search.main_bar_search
+import kotlinx.android.synthetic.main.view_search.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -45,6 +47,7 @@ class SearchFragment : Fragment() {
         setupListeners()
         setupClicks()
         setupTextChanges()
+        requireContext().showKeyboardForEditText(et_search)
     }
 
     override fun onResume() {
@@ -106,7 +109,7 @@ class SearchFragment : Fragment() {
         // слушатель изменения текста в поиске
         main_bar_search.setupTextChanges(this) {
             model.send { MainActions.SetQuery(it) }
-            model.send { MainActions.SearchNews() }
+            model.send { MainActions.SearchNews(getLocaleLanguage(resources)) }
         }
     }
 
@@ -120,6 +123,7 @@ class SearchFragment : Fragment() {
 
         // слушает изменения результатов поиска и обновляет список adapter
         model.searchLiveData.observeNotNull(this) {
+            empty_view_search.changeViewVisibility(it.isEmpty())
             it.let { sortedList ->
                 searchAdapter.setData(sortedList)
             }

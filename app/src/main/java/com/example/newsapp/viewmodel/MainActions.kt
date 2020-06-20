@@ -4,7 +4,7 @@ import com.example.newsapp.db.entities.DBNews
 
 interface MainActions : Action {
     class GetNews(val country: String) : MainActions
-    class SearchNews : MainActions
+    class SearchNews(val country: String) : MainActions
     class SetQuery(val query: String) : MainActions
     class SetFromDate(val fromDate: String) : MainActions
     class SetToDate(val toDate: String) : MainActions

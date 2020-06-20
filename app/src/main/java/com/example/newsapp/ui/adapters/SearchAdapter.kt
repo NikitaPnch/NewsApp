@@ -29,6 +29,7 @@ class SearchAdapter(private val busEvent: PublishSubject<Any>) :
 
         override fun onBind(position: Int) {
             super.onBind(position)
+
             val article = articles[position]
 
             article.apply {

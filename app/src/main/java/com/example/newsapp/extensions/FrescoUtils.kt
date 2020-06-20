@@ -13,7 +13,6 @@ fun SimpleDraweeView.createImageRequest(uri: String) {
     val request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
         .setResizeOptions(ResizeOptions(480, 480))
         .setRequestPriority(Priority.HIGH)
-        .setProgressiveRenderingEnabled(true)
         .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
         .build()
 

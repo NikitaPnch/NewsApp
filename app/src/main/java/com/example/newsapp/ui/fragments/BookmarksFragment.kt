@@ -10,6 +10,7 @@ import autodispose2.androidx.lifecycle.scope
 import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
+import com.example.newsapp.extensions.changeViewVisibility
 import com.example.newsapp.extensions.getTimestampFromString
 import com.example.newsapp.extensions.observeNotNull
 import com.example.newsapp.extensions.openUrlInCustomTabs
@@ -18,7 +19,7 @@ import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
 import io.reactivex.rxjava3.kotlin.ofType
 import io.reactivex.rxjava3.subjects.PublishSubject
-import kotlinx.android.synthetic.main.fragment_top_headlines.*
+import kotlinx.android.synthetic.main.fragment_bookmarks.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BookmarksFragment : Fragment() {
@@ -32,7 +33,7 @@ class BookmarksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_top_headlines, container, false)
+        return inflater.inflate(R.layout.fragment_bookmarks, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,6 +70,7 @@ class BookmarksFragment : Fragment() {
     // устанавливает наблюдатель закладок и их изменение в бд
     private fun setupObservers() {
         model.bookmarksLiveData.observeNotNull(this) { unsortedList ->
+            empty_view_bookmark.changeViewVisibility(unsortedList.isEmpty())
             unsortedList.sortedByDescending { getTimestampFromString(it.publishedAt) }
                 .let { sortedList ->
                     bookmarksAdapter.setData(sortedList)
@@ -80,6 +82,6 @@ class BookmarksFragment : Fragment() {
     private fun setupRecycler() {
         val layoutManager = LinearLayoutManager(this.requireActivity())
         bookmarksAdapter = BookmarksAdapter(busEvent)
-        bookmarksAdapter.appendTo(rv_news, layoutManager)
+        bookmarksAdapter.appendTo(rv_bookmarks, layoutManager)
     }
 }
