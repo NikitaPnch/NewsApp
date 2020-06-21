@@ -60,11 +60,13 @@ class MainActivity : AppCompatActivity() {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> {
+                    hideKeyboard(this)
                     renameBar(R.string.news)
                     replaceFragment(topHeadlinesFragment)
                     showMainBarWithAnim()
                 }
                 R.id.action_bookmarks -> {
+                    hideKeyboard(this)
                     renameBar(R.string.bookmarks)
                     replaceFragment(bookmarksFragment)
                     showMainBarWithAnim()

@@ -56,7 +56,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
             arrayFilterNames[2] to API.RELEVANCY
         )
 
-        // установка слушателя выбранного элемента
+        // установка слушателя выбранного элемента фильтра
         spinner_filter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
