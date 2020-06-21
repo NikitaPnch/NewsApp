@@ -2,15 +2,25 @@ package com.example.newsapp.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.example.newsapp.R
+import com.example.newsapp.Receiver
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -75,7 +85,7 @@ fun openUrlInCustomTabs(context: Activity, url: String) {
 }
 
 // показывает toast с любым сообщением
-fun Context.showToastMessage(message: Int) {
+fun Context.showToastMessage(@StringRes message: Int) {
     Toast.makeText(
         this,
         resources.getString(message),
@@ -90,4 +100,32 @@ fun View.changeViewVisibility(needShow: Boolean) {
     } else {
         View.GONE
     }
+}
+
+// меняет привязку constraint с анимацией
+fun updateConstraints(
+    layout: ConstraintLayout,
+    @IdRes root: Int,
+    @IdRes mainBar: Int,
+    isShow: Boolean
+) {
+    Handler().postDelayed({
+        val set = ConstraintSet()
+        set.clone(layout)
+        set.connect(
+            root, ConstraintSet.TOP,
+            mainBar, if (isShow) ConstraintSet.BOTTOM else ConstraintSet.TOP, 0
+        )
+        val transitionSet = TransitionSet().addTransition(ChangeBounds())
+        transitionSet.duration = 250
+        TransitionManager.beginDelayedTransition(layout, transitionSet)
+        set.applyTo(layout)
+    }, 250)
+}
+
+// создает пустой интент
+fun Context.createIntent(): Intent? {
+    val intent = Intent(this, Receiver::class.java)
+    intent.action = "action"
+    return intent
 }

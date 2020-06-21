@@ -1,15 +1,15 @@
 package com.example.newsapp.ui
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.distinctUntilChanged
 import com.example.newsapp.R
-import com.example.newsapp.extensions.ConnectionLiveData
-import com.example.newsapp.extensions.debounce
-import com.example.newsapp.extensions.getLocaleCountry
-import com.example.newsapp.extensions.observe
+import com.example.newsapp.extensions.*
 import com.example.newsapp.ui.fragments.BookmarksFragment
 import com.example.newsapp.ui.fragments.SearchFragment
 import com.example.newsapp.ui.fragments.TopHeadlinesFragment
@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class MainActivity : AppCompatActivity() {
 
     private val model by viewModel<MainViewModel>()
@@ -27,13 +28,16 @@ class MainActivity : AppCompatActivity() {
     private val topHeadlinesFragment by lazy { TopHeadlinesFragment() }
     private val searchFragment by lazy { SearchFragment() }
     private val bookmarksFragment by lazy { BookmarksFragment() }
+    private val notificationHelper by lazy { NotificationHelper() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        notificationHelper.createNotificationChannel(this)
         setupNetworkConnectionLiveData()
         setupBottomNavigation()
+        setupAlarmManager()
     }
 
     // устанавливает слушатель интернет соединения
@@ -57,17 +61,17 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.action_today -> {
                     renameBar(R.string.news)
-                    showMainBarWithAnim()
                     replaceFragment(topHeadlinesFragment)
+                    showMainBarWithAnim()
                 }
                 R.id.action_bookmarks -> {
                     renameBar(R.string.bookmarks)
-                    showMainBarWithAnim()
                     replaceFragment(bookmarksFragment)
+                    showMainBarWithAnim()
                 }
                 R.id.action_search -> {
-                    hideMainBarWithAnim()
                     replaceFragment(searchFragment)
+                    hideMainBarWithAnim()
                 }
                 else -> replaceFragment(topHeadlinesFragment)
             }
@@ -110,32 +114,46 @@ class MainActivity : AppCompatActivity() {
             main_bar.animate().apply {
                 translationY(-main_bar.height.toFloat())
                 withEndAction {
-                    main_bar.visibility = View.GONE
+                    main_bar.visibility = View.INVISIBLE
                 }
-                startDelay = 100
-                duration = 500
+                startDelay = 250
+                duration = 250
                 start()
             }
+            updateConstraints(root_layout, R.id.fragment_container, R.id.main_bar, isShow = false)
         }
     }
 
     // показывает main bar с анимацией
     private fun showMainBarWithAnim() {
-        if (main_bar.visibility == View.GONE) {
+        if (main_bar.visibility == View.INVISIBLE) {
             main_bar.animate().apply {
                 translationYBy(main_bar.height.toFloat())
                 withStartAction {
                     main_bar.visibility = View.VISIBLE
                 }
-                startDelay = 100
-                duration = 500
+                startDelay = 250
+                duration = 250
                 start()
             }
+            updateConstraints(root_layout, R.id.fragment_container, R.id.main_bar, isShow = true)
         }
     }
 
     // переименовывает main bar
     private fun renameBar(name: Int) {
         main_bar_text.text = resources.getString(name)
+    }
+
+    // включает alarm manager с выполнением задачи каждый час которую будет обрабатывать Receiver.kt
+    private fun setupAlarmManager() {
+        val intent = createIntent()
+        val pendingIntent =
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent
+        )
     }
 }

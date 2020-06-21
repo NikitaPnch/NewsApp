@@ -12,6 +12,9 @@
     <string name="error_message">Произошла ошибка, попробуйте повторить позже</string>
     <string name="news">Новости</string>
     <string name="bookmarks">Закладки</string>
+    <string name="channel_name">Уведомления</string>
+    <string name="channel_description">Уведомления</string>
+    <string name="fresh_news">Свежие новости</string>
 
     <string-array name="filterNames">
         <item>Дате публикации</item>
