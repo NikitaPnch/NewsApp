@@ -98,8 +98,8 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
 
         // кнопка "показать результаты с текущими фильтрами"
         tv_show_result.clicks().liveDataNotNull(this) {
-            dismiss()
             model.send { MainActions.SearchNews(getLocaleLanguage(resources)) }
+            dismiss()
         }
     }
 
