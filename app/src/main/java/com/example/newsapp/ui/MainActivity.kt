@@ -65,12 +65,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.action_bookmarks -> model.send { MainActions.ScrollToTop() }
             }
             when (it.itemId) {
-                R.id.action_today -> {
-                    setupFragment(R.string.news, topHeadlinesFragment)
-                }
-                R.id.action_bookmarks -> {
-                    setupFragment(R.string.bookmarks, bookmarksFragment)
-                }
+                R.id.action_today -> setupFragment(R.string.news, topHeadlinesFragment)
+                R.id.action_bookmarks -> setupFragment(R.string.bookmarks, bookmarksFragment)
                 R.id.action_search -> {
                     replaceFragment(searchFragment)
                     hideMainBarWithAnim()
