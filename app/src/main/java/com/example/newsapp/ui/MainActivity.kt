@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.distinctUntilChanged
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         notificationHelper.createNotificationChannel(this)
+        setupFragment(R.string.news, topHeadlinesFragment)
         setupNetworkConnectionLiveData()
         setupBottomNavigation()
         setupAlarmManager()
@@ -58,29 +60,33 @@ class MainActivity : AppCompatActivity() {
     // настраивает BottomNavigationView для переключения фрагментов между собой
     private fun setupBottomNavigation() {
         bottom_navigation.setOnNavigationItemSelectedListener {
+            when (bottom_navigation.selectedItemId) {
+                R.id.action_today,
+                R.id.action_bookmarks -> model.send { MainActions.ScrollToTop() }
+            }
             when (it.itemId) {
                 R.id.action_today -> {
-                    hideKeyboard(this)
-                    renameBar(R.string.news)
-                    replaceFragment(topHeadlinesFragment)
-                    showMainBarWithAnim()
+                    setupFragment(R.string.news, topHeadlinesFragment)
                 }
                 R.id.action_bookmarks -> {
-                    hideKeyboard(this)
-                    renameBar(R.string.bookmarks)
-                    replaceFragment(bookmarksFragment)
-                    showMainBarWithAnim()
+                    setupFragment(R.string.bookmarks, bookmarksFragment)
                 }
                 R.id.action_search -> {
                     replaceFragment(searchFragment)
                     hideMainBarWithAnim()
                 }
-                else -> replaceFragment(topHeadlinesFragment)
+                else -> {
+                }
             }
             true
         }
+    }
 
-        bottom_navigation.selectedItemId = R.id.action_today
+    private fun setupFragment(@StringRes name: Int, fragment: Fragment) {
+        hideKeyboard(this)
+        renameBar(name)
+        replaceFragment(fragment)
+        showMainBarWithAnim()
     }
 
     // заменяет фрагменты
@@ -143,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // переименовывает main bar
-    private fun renameBar(name: Int) {
+    private fun renameBar(@StringRes name: Int) {
         main_bar_text.text = resources.getString(name)
     }
 

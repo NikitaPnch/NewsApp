@@ -4,16 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodispose2.androidx.lifecycle.scope
 import autodispose2.autoDispose
 import com.example.newsapp.Events
 import com.example.newsapp.R
-import com.example.newsapp.extensions.changeViewVisibility
-import com.example.newsapp.extensions.getTimestampFromString
-import com.example.newsapp.extensions.observeNotNull
-import com.example.newsapp.extensions.openUrlInCustomTabs
+import com.example.newsapp.extensions.*
 import com.example.newsapp.ui.adapters.BookmarksAdapter
 import com.example.newsapp.viewmodel.MainActions
 import com.example.newsapp.viewmodel.MainViewModel
@@ -41,12 +39,24 @@ class BookmarksFragment : Fragment() {
 
         setupRecycler()
         setupObservers()
+        setupListeners()
     }
 
     override fun onResume() {
         super.onResume()
 
         setupBusEvents()
+    }
+
+    // установка слушателей
+    private fun setupListeners() {
+
+        // слушает событие проскроллить к первой записи
+        model.listen<MainActions.ScrollToTop>().liveDataNotNull(this) {
+            if (rv_bookmarks.size != 0) {
+                rv_bookmarks.smoothScrollToPosition(0)
+            }
+        }
     }
 
     // устанавливает обработку событий шины

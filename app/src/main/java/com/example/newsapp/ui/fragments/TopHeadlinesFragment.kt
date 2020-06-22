@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodispose2.androidx.lifecycle.scope
@@ -39,6 +40,7 @@ class TopHeadlinesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecycler()
+        setupListeners()
         setupSwipeRefreshNews()
         setupObservers()
     }
@@ -72,6 +74,17 @@ class TopHeadlinesFragment : Fragment() {
             .subscribe {
                 model.send { MainActions.RemoveArticleFromBookmarks(it.url) }
             }
+    }
+
+    // установка слушателей
+    private fun setupListeners() {
+
+        // слушает событие проскроллить к первой записи
+        model.listen<MainActions.ScrollToTop>().liveDataNotNull(this) {
+            if (rv_news.size != 0) {
+                rv_news.smoothScrollToPosition(0)
+            }
+        }
     }
 
     // установка наблюдателей

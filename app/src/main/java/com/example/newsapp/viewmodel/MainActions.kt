@@ -12,4 +12,5 @@ interface MainActions : Action {
     class ClearAllFilters : MainActions
     class AddArticleToBookmarks(val dbNews: DBNews) : MainActions
     class RemoveArticleFromBookmarks(val url: String) : MainActions
+    class ScrollToTop : MainActions
 }
