@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // устанавливает выбранный фрагмент с параметрами
     private fun setupFragment(@StringRes name: Int, fragment: Fragment) {
         hideKeyboard(this)
         renameBar(name)
