@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.distinctUntilChanged
 import com.example.newsapp.R
+import com.example.newsapp.Receiver
 import com.example.newsapp.extensions.*
 import com.example.newsapp.ui.fragments.BookmarksFragment
 import com.example.newsapp.ui.fragments.SearchFragment
@@ -20,7 +21,6 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -152,13 +152,13 @@ class MainActivity : AppCompatActivity() {
 
     // включает alarm manager с выполнением задачи каждый час которую будет обрабатывать Receiver.kt
     private fun setupAlarmManager() {
-        val intent = createIntent()
+        val intent = Receiver.createIntent(this)
         val pendingIntent =
             PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent
+            AlarmManager.INTERVAL_HOUR, AlarmManager.INTERVAL_HOUR, pendingIntent
         )
     }
 }

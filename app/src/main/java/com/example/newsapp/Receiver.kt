@@ -19,8 +19,18 @@ class Receiver : BroadcastReceiver() {
     private val api by lazy { API() }
     private val notificationHelper by lazy { NotificationHelper() }
 
+    companion object {
+
+        // создает интент для Receiver.kt
+        fun createIntent(context: Context): Intent? {
+            val intent = Intent(context, Receiver::class.java)
+            intent.action = "action.check.news"
+            return intent
+        }
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
-        GlobalScope.launch(Dispatchers.Default) {
+        GlobalScope.launch(Dispatchers.IO) {
             runCatching {
                 val news = newsRepository.getNews()
                 api.news.getTopHeadlines(getLocaleCountry(context.resources)).await().let {

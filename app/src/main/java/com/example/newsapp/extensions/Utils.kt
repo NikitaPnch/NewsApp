@@ -2,7 +2,6 @@ package com.example.newsapp.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Handler
@@ -20,7 +19,6 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.example.newsapp.R
-import com.example.newsapp.Receiver
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -123,9 +121,3 @@ fun updateConstraints(
     }, 250)
 }
 
-// создает пустой интент
-fun Context.createIntent(): Intent? {
-    val intent = Intent(this, Receiver::class.java)
-    intent.action = "action"
-    return intent
-}
