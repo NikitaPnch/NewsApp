@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setRepeating(
             AlarmManager.RTC_WAKEUP,
-            AlarmManager.INTERVAL_HOUR, AlarmManager.INTERVAL_HOUR, pendingIntent
+            System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent
         )
     }
 }

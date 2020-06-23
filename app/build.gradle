@@ -140,8 +140,4 @@ dependencies {
     def rxbinding_version = "4.0.0"
     implementation "com.jakewharton.rxbinding4:rxbinding-core:$rxbinding_version"
     implementation "com.jakewharton.rxbinding4:rxbinding-appcompat:$rxbinding_version"
-
-    //
-    def work_versions = "2.3.4"
-    implementation "androidx.work:work-runtime-ktx:$work_versions"
 }

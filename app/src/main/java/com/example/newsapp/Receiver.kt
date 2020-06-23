@@ -39,7 +39,7 @@ class Receiver : BroadcastReceiver() {
                     }
                 }
             }.onFailure {
-                Timber.tag("ERROR").d("showNotification = ${it.localizedMessage}")
+                Timber.tag("ERROR").e("showNotification = ${it.localizedMessage}")
             }
         }
     }
