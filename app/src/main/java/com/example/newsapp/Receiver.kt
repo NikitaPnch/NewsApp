@@ -7,11 +7,8 @@ import com.example.newsapp.api.API
 import com.example.newsapp.db.repositories.NewsRepository
 import com.example.newsapp.extensions.NotificationHelper
 import com.example.newsapp.extensions.getLocaleCountry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.example.newsapp.extensions.launchIO
 import kotlinx.coroutines.rx2.await
-import timber.log.Timber
 
 class Receiver : BroadcastReceiver() {
 
@@ -30,16 +27,12 @@ class Receiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        GlobalScope.launch(Dispatchers.IO) {
-            runCatching {
-                val news = newsRepository.getNews()
-                api.news.getTopHeadlines(getLocaleCountry(context.resources)).await().let {
-                    if (it.articles.firstOrNull()?.url != news.firstOrNull()?.url) {
-                        notificationHelper.showNotification(context)
-                    }
+        launchIO {
+            val news = newsRepository.getNews()
+            api.news.getTopHeadlines(getLocaleCountry(context.resources)).await().let {
+                if (it.articles.firstOrNull()?.url != news.firstOrNull()?.url) {
+                    notificationHelper.showNotification(context)
                 }
-            }.onFailure {
-                Timber.tag("ERROR").e("showNotification = ${it.localizedMessage}")
             }
         }
     }

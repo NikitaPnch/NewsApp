@@ -1,14 +1,12 @@
 package com.example.newsapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.newsapp.api.API
 import com.example.newsapp.api.model.APINews
 import com.example.newsapp.db.entities.DBNews
 import com.example.newsapp.db.repositories.BookmarkRepository
 import com.example.newsapp.db.repositories.NewsRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
 
@@ -110,13 +108,13 @@ class MainViewModel : BaseViewModel() {
 
     // добавляет в таблицу новость-закладку
     private suspend fun addArticleToBookmarks(dbNews: DBNews) =
-        viewModelScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             bookmarkRepository.insertBookmark(dbNews)
         }
 
     // убирает из таблицы новость-закладку
     private suspend fun removeArticleFromBookmarks(url: String) =
-        viewModelScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             bookmarkRepository.deleteBookmarkByUrl(url)
         }
 }
