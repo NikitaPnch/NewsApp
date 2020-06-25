@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.newsapp.R
 import com.example.newsapp.ui.MainActivity
 
@@ -30,9 +31,10 @@ class NotificationHelper {
             .setSmallIcon(R.drawable.ic_stat_news)
             .setContentTitle(context.resources.getString(R.string.app_name))
             .setContentText(context.resources.getString(R.string.fresh_news))
-        mBuilder.setContentIntent(contentIntent)
-        mBuilder.setDefaults(Notification.DEFAULT_SOUND)
-        mBuilder.setAutoCancel(true)
+            .setContentIntent(contentIntent)
+            .setDefaults(Notification.DEFAULT_SOUND)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
+            .setAutoCancel(true)
         val mNotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mNotificationManager.notify(1, mBuilder.build())
@@ -45,8 +47,12 @@ class NotificationHelper {
             val descriptionText = context.getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            mChannel.description = descriptionText
-            mChannel.importance = NotificationManager.IMPORTANCE_HIGH
+            mChannel.apply {
+                description = descriptionText
+                setImportance(NotificationManager.IMPORTANCE_HIGH)
+                enableLights(true)
+                enableVibration(true)
+            }
             val notificationManager =
                 context.getSystemService(AppCompatActivity.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
