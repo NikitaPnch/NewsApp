@@ -19,6 +19,7 @@ class NotificationHelper {
         const val CHANNEL_ID = "101"
     }
 
+    // показывает уведомление
     fun showNotification(context: Context) {
         val contentIntent = PendingIntent.getActivity(
             context, 0,
