@@ -14,8 +14,6 @@ open class BaseViewModel : ViewModel() {
 
     val bus: PublishSubject<Action> = PublishSubject.create()
 
-    protected open suspend fun listen(action: Action) {}
-
     private suspend fun send(action: Action) {
         runCatching {
             bus.onNext(action)
@@ -39,6 +37,8 @@ open class BaseViewModel : ViewModel() {
             sendAwait(action)
         }
     }
+
+    protected open suspend fun listen(action: Action) {}
 
     inline fun <reified T : Any> listen(): Observable<T> = bus
         .subscribeOn(Schedulers.io())
