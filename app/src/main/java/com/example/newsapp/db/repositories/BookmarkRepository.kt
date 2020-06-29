@@ -1,13 +1,11 @@
 package com.example.newsapp.db.repositories
 
 import androidx.lifecycle.LiveData
-import com.example.newsapp.db.AppDatabase
+import com.example.newsapp.db.dao.BookmarkDao
 import com.example.newsapp.db.entities.DBBookmark
 import com.example.newsapp.db.entities.DBNews
 
-class BookmarkRepository {
-
-    private val bookmarkDao = AppDatabase.INSTANCE.bookmarkDao()
+class BookmarkRepository(private val bookmarkDao: BookmarkDao) {
 
     // хранит записи из таблицы в формате LiveData
     val bookmarkListLiveData: LiveData<List<DBBookmark>> = bookmarkDao.queryBookmarks()

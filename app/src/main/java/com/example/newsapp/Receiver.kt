@@ -5,17 +5,19 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.newsapp.api.API
+import com.example.newsapp.api.requests.News
 import com.example.newsapp.db.repositories.NewsRepository
 import com.example.newsapp.extensions.NotificationHelper
 import com.example.newsapp.extensions.getLocaleCountry
 import com.example.newsapp.extensions.launchIO
 import kotlinx.coroutines.rx2.await
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
-class Receiver : BroadcastReceiver() {
+class Receiver : BroadcastReceiver(), KoinComponent {
 
-    private var newsRepository: NewsRepository = NewsRepository()
-    private val api by lazy { API() }
+    private val newsRepository: NewsRepository by inject()
+    private val newsApi: News by inject()
     private val notificationHelper by lazy { NotificationHelper() }
 
     companion object {
@@ -43,7 +45,7 @@ class Receiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         launchIO {
             val news = newsRepository.getNews()
-            api.news.getTopHeadlines(getLocaleCountry(context.resources)).await().let {
+            newsApi.getTopHeadlinesAsync(getLocaleCountry(context.resources)).await().let {
                 if (it.articles.firstOrNull()?.url != news.firstOrNull()?.url) {
                     notificationHelper.showNotification(context)
                 }
