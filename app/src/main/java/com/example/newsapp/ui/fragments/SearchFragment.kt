@@ -107,7 +107,7 @@ class SearchFragment : Fragment() {
     private fun setupTextChanges() {
 
         // слушатель изменения текста в поиске
-        main_bar_search.setupTextChanges(this) {
+        main_bar_search.setupSearchChanges(this) {
             model.send { MainActions.SetQuery(it) }
             model.send { MainActions.SearchNews(getLocaleLanguage(resources)) }
         }

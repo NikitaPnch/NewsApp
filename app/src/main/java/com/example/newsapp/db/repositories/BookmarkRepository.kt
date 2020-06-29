@@ -9,7 +9,7 @@ class BookmarkRepository {
 
     private val bookmarkDao = AppDatabase.INSTANCE.bookmarkDao()
 
-    // хранит записи из таблицы в формате liveData
+    // хранит записи из таблицы в формате LiveData
     val bookmarkListLiveData: LiveData<List<DBBookmark>> = bookmarkDao.queryBookmarks()
 
     // вставить закладку в таблицу

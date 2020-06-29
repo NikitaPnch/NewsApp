@@ -21,7 +21,7 @@ class SearchView @JvmOverloads constructor(
         View.inflate(context, R.layout.view_search, this)
     }
 
-    fun setupTextChanges(lifecycleOwner: LifecycleOwner, action: (query: String) -> Unit) {
+    fun setupSearchChanges(lifecycleOwner: LifecycleOwner, action: (query: String) -> Unit) {
         et_search.textChanges()
             .map { query ->
                 query.toString().toLowerCase(Locale.getDefault()).trim()

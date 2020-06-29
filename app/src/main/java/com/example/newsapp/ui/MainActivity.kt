@@ -1,8 +1,5 @@
 package com.example.newsapp.ui
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
@@ -39,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setupFragment(R.string.news, topHeadlinesFragment)
         setupNetworkConnectionLiveData()
         setupBottomNavigation()
-        setupAlarmManager()
+        Receiver.setupAlarmManager(this)
     }
 
     // устанавливает слушатель интернет соединения
@@ -148,17 +145,5 @@ class MainActivity : AppCompatActivity() {
     // переименовывает main bar
     private fun renameBar(@StringRes name: Int) {
         main_bar_text.text = resources.getString(name)
-    }
-
-    // включает alarm manager с выполнением задачи каждый час которую будет обрабатывать Receiver.kt
-    private fun setupAlarmManager() {
-        val intent = Receiver.createIntent(this)
-        val pendingIntent =
-            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarm = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            System.currentTimeMillis(), AlarmManager.INTERVAL_HOUR, pendingIntent
-        )
     }
 }

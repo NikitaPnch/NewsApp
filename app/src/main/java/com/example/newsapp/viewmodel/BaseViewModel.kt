@@ -18,8 +18,8 @@ open class BaseViewModel : ViewModel() {
         runCatching {
             bus.onNext(action)
             listen(action)
-        }.onFailure {
-            Action.Error(it).let {
+        }.onFailure { t ->
+            Action.Error(t).let {
                 bus.onNext(it)
                 listen(it)
             }

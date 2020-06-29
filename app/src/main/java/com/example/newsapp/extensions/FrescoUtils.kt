@@ -13,7 +13,6 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 
-
 fun SimpleDraweeView.createImageRequest(uri: String) {
     val request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(uri))
         .setResizeOptions(ResizeOptions(480, 480))

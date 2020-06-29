@@ -147,7 +147,7 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
     private fun getDatePickerListener(
         isFromDate: Boolean
     ): DatePickerDialog.OnDateSetListener {
-        return DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+        return DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             if (isFromDate) {
                 model.send { MainActions.SetFromDate(toQueryDate(year, month, dayOfMonth)) }
             } else {
