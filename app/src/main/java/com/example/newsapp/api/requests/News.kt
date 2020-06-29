@@ -1,6 +1,6 @@
 package com.example.newsapp.api.requests
 
-import com.example.newsapp.Constants
+import com.example.newsapp.api.API
 import com.example.newsapp.api.model.APINews
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -13,9 +13,9 @@ interface News {
      * @param pageSize кол-во результатов на страницу, мин = 20, макс = 100
      */
     @GET("v2/top-headlines")
-    fun getTopHeadlinesAsync(
+    fun getTopHeadlines(
         @Query("country") country: String? = null,
-        @Query("pageSize") pageSize: Int? = Constants.PAGE_SIZE
+        @Query("pageSize") pageSize: Int? = API.PAGE_SIZE
     ): Single<APINews>
 
     /** Поиск по новостям
@@ -27,12 +27,12 @@ interface News {
      * @param pageSize кол-во результатов на страницу, мин = 20, макс = 100
      */
     @GET("v2/everything")
-    fun searchEverythingAsync(
+    fun searchEverything(
         @Query("q") query: String,
-        @Query("sortBy") sortBy: String? = Constants.PUBLISHED_AT,
+        @Query("sortBy") sortBy: String? = API.PUBLISHED_AT,
         @Query("from") from: String? = null,
         @Query("to") to: String? = null,
         @Query("language") language: String?,
-        @Query("pageSize") pageSize: Int? = Constants.PAGE_SIZE
+        @Query("pageSize") pageSize: Int? = API.PAGE_SIZE
     ): Single<APINews>
 }

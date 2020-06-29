@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
-import com.example.newsapp.Constants
 import com.example.newsapp.R
+import com.example.newsapp.api.API
 import com.example.newsapp.extensions.getLocaleLanguage
 import com.example.newsapp.extensions.liveDataNotNull
 import com.example.newsapp.extensions.observeNotNull
@@ -51,9 +51,9 @@ class FilterBottomSheetFragment : BottomSheetDialogFragment() {
 
         // создаем карту пар названий фильтров и их значения из апи
         val map = mapOf(
-            arrayFilterNames[0] to Constants.PUBLISHED_AT,
-            arrayFilterNames[1] to Constants.POPULARITY,
-            arrayFilterNames[2] to Constants.RELEVANCY
+            arrayFilterNames[0] to API.PUBLISHED_AT,
+            arrayFilterNames[1] to API.POPULARITY,
+            arrayFilterNames[2] to API.RELEVANCY
         )
 
         // установка слушателя выбранного элемента фильтра
