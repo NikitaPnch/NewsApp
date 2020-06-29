@@ -13,10 +13,8 @@ import kotlinx.coroutines.withContext
 class MainViewModel : BaseViewModel() {
 
     private val api by lazy { API() }
-    private var totalResults: Int? = null
-    private var newsRepository: NewsRepository = NewsRepository()
-    private var bookmarkRepository: BookmarkRepository = BookmarkRepository()
-    private var query: String = ""
+    private val newsRepository: NewsRepository = NewsRepository()
+    private val bookmarkRepository: BookmarkRepository = BookmarkRepository()
 
     var topHeadlinesLiveData = newsRepository.newsListLiveData
     var bookmarksLiveData = bookmarkRepository.bookmarkListLiveData
@@ -25,6 +23,7 @@ class MainViewModel : BaseViewModel() {
     val isLoading = MutableLiveData(false)
     val isLoadingSearch = MutableLiveData(false)
 
+    private var query: String = ""
     val fromDate: MutableLiveData<String> = MutableLiveData()
     val toDate: MutableLiveData<String> = MutableLiveData()
     private val sortBy: MutableLiveData<String> = MutableLiveData()
@@ -52,7 +51,6 @@ class MainViewModel : BaseViewModel() {
             api.news.getTopHeadlines(country).await().let {
                 newsRepository.updateNews(it.articles)
                 withContext(Dispatchers.Main) {
-                    totalResults = it.totalResults
                     isLoading.value = false
                 }
             }
@@ -71,7 +69,6 @@ class MainViewModel : BaseViewModel() {
                 country
             ).await().let {
                 withContext(Dispatchers.Main) {
-                    totalResults = it.totalResults
                     searchLiveData.value = it.articles
                     isLoadingSearch.value = false
                 }
