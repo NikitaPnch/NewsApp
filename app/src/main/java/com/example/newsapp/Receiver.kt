@@ -5,17 +5,14 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.newsapp.api.API
 import com.example.newsapp.db.repositories.NewsRepository
 import com.example.newsapp.extensions.NotificationHelper
 import com.example.newsapp.extensions.getLocaleCountry
 import com.example.newsapp.extensions.launchIO
-import kotlinx.coroutines.rx2.await
 
 class Receiver : BroadcastReceiver() {
 
-    private var newsRepository: NewsRepository = NewsRepository()
-    private val api by lazy { API() }
+    private val newsRepository: NewsRepository = NewsRepository()
     private val notificationHelper by lazy { NotificationHelper() }
 
     companion object {
@@ -42,9 +39,8 @@ class Receiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         launchIO {
-            val news = newsRepository.getNews()
-            api.news.getTopHeadlines(getLocaleCountry(context.resources)).await().let {
-                if (it.articles.firstOrNull()?.url != news.firstOrNull()?.url) {
+            newsRepository.checkHaveNewArticles(getLocaleCountry(context.resources)).let {
+                if (it) {
                     notificationHelper.showNotification(context)
                 }
             }

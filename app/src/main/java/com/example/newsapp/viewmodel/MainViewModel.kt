@@ -2,24 +2,21 @@ package com.example.newsapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.example.newsapp.api.API
-import com.example.newsapp.api.model.APINews
 import com.example.newsapp.db.entities.DBNews
 import com.example.newsapp.db.repositories.BookmarkRepository
 import com.example.newsapp.db.repositories.NewsRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
 
 class MainViewModel : BaseViewModel() {
 
-    private val api by lazy { API() }
     private val newsRepository: NewsRepository = NewsRepository()
     private val bookmarkRepository: BookmarkRepository = BookmarkRepository()
 
     var topHeadlinesLiveData = newsRepository.newsListLiveData
     var bookmarksLiveData = bookmarkRepository.bookmarkListLiveData
+    val searchLiveData = newsRepository.searchLiveData
 
-    val searchLiveData = MutableLiveData(emptyList<APINews.Article>())
     val isLoading = MutableLiveData(false)
     val isLoadingSearch = MutableLiveData(false)
 
@@ -44,36 +41,16 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
-    // получает свежие новости из текущей страны
     private suspend fun getTopHeadlines(country: String) {
         isLoading.value = true
-        withContext(Dispatchers.IO) {
-            api.news.getTopHeadlines(country).await().let {
-                newsRepository.updateNews(it.articles)
-                withContext(Dispatchers.Main) {
-                    isLoading.value = false
-                }
-            }
-        }
+        newsRepository.getTopHeadlines(country)
+        isLoading.value = false
     }
 
-    // ищет любые новости с текущими фильтрами
     private suspend fun searchEverything(country: String) {
         isLoadingSearch.value = true
-        withContext(Dispatchers.IO) {
-            api.news.searchEverything(
-                query,
-                sortBy.value,
-                fromDate.value,
-                toDate.value,
-                country
-            ).await().let {
-                withContext(Dispatchers.Main) {
-                    searchLiveData.value = it.articles
-                    isLoadingSearch.value = false
-                }
-            }
-        }
+        newsRepository.searchEverything(query, sortBy.value, fromDate.value, toDate.value, country)
+        isLoadingSearch.value = false
     }
 
     // устанавливает значение поиска
