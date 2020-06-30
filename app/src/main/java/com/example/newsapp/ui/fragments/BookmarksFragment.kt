@@ -53,7 +53,7 @@ class BookmarksFragment : Fragment() {
 
         // слушает событие проскроллить к первой записи
         model.listen<MainActions.ScrollToTop>().liveDataNotNull(this) {
-            if (rv_bookmarks.size != 0) {
+            if (rv_bookmarks.size > 0) {
                 rv_bookmarks.smoothScrollToPosition(0)
             }
         }

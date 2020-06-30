@@ -81,9 +81,17 @@ class TopHeadlinesFragment : Fragment() {
 
         // слушает событие проскроллить к первой записи
         model.listen<MainActions.ScrollToTop>().liveDataNotNull(this) {
-            if (rv_news.size != 0) {
+            if (rv_news.size > 0) {
                 rv_news.smoothScrollToPosition(0)
             }
+        }
+
+        // слушает события ошибки запроса viewmodel, при ошибке отключает preloader
+        model.listen<Action.Error>().liveDataNotNull(this) {
+            model.isLoading.value = false
+            srl_refresh_news.isRefreshing = false
+            this.requireContext().showToastMessage(R.string.error_message)
+            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
     }
 
@@ -101,14 +109,6 @@ class TopHeadlinesFragment : Fragment() {
         // управляет показом preloader подгрузки новостей
         model.isLoading.observeNotNull(this) { isLoading ->
             srl_refresh_news.isRefreshing = isLoading
-        }
-
-        // слушает события ошибки запроса viewmodel, при ошибке отключает preloader
-        model.listen<Action.Error>().liveDataNotNull(this) {
-            model.isLoading.value = false
-            srl_refresh_news.isRefreshing = false
-            this.requireContext().showToastMessage(R.string.error_message)
-            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
     }
 

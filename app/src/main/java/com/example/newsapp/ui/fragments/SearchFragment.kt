@@ -75,9 +75,10 @@ class SearchFragment : Fragment() {
     // установка слушателей
     private fun setupListeners() {
 
-        // слушатель ошибки viewmodel - скрывает прогресс загрузки
+        // слушатель ошибки viewmodel - скрывает прогресс загрузки, показывает сообщение об ошибке
         model.listen<Action.Error>().liveDataNotNull(this) {
             main_bar_search.hideProgressBar()
+            model.isLoadingSearch.value = false
             this.requireContext().showToastMessage(R.string.error_message)
             Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
@@ -136,13 +137,6 @@ class SearchFragment : Fragment() {
             } else {
                 main_bar_search.hideProgressBar()
             }
-        }
-
-        // слушает ошибки viewmodel и показывает сообщение с ошибкой
-        model.listen<Action.Error>().liveDataNotNull(this) {
-            model.isLoadingSearch.value = false
-            this.requireContext().showToastMessage(R.string.error_message)
-            Timber.tag("ERROR").e(it.errorMessage.localizedMessage)
         }
     }
 }
