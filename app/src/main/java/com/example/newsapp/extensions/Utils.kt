@@ -2,9 +2,9 @@ package com.example.newsapp.extensions
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -19,37 +19,16 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.example.newsapp.R
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
-
-// вытаскивает timestamp из строки с датой
-fun getTimestampFromString(dateStr: String): Long {
-    val newString = dateStr.replace("T", " ").replace("Z", "")
-    val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
-    val date: Date = formatter.parse(newString) as Date
-    return date.time
-}
-
-// получить установленный язык на устройстве
-fun getLocaleCountry(resources: Resources): String {
-    return resources.configuration.locale.country.toLowerCase(Locale.getDefault())
-}
-
-// получить установленный язык на устройстве
-fun getLocaleLanguage(resources: Resources): String {
-    return resources.configuration.locale.language.toLowerCase(Locale.getDefault())
-}
 
 // показать клавиатуру для выбранного editText
-fun Context.showKeyboardForEditText(editText: EditText) {
-    editText.requestFocus()
+fun showKeyboard(activity: Activity, editText: EditText) {
     val imm: InputMethodManager =
-        getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.toggleSoftInput(
-        InputMethodManager.SHOW_IMPLICIT,
-        InputMethodManager.HIDE_IMPLICIT_ONLY
-    )
+        activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    var view: View? = activity.currentFocus
+    if (view == null) {
+        view = View(activity)
+    }
+    imm.showSoftInput(view, 0)
 }
 
 // скрыть клавиатуру
@@ -69,7 +48,7 @@ fun toQueryDate(year: Int, month: Int, dayOfMonth: Int): String {
 }
 
 // открывает ссылку внутри браузера в приложении
-fun openUrlInCustomTabs(context: Activity, url: String) {
+fun openUrlInCustomTabs(context: Context, url: String) {
     val customTabsIntent = CustomTabsIntent.Builder().apply {
         addDefaultShareMenuItem()
         setToolbarColor(
@@ -107,7 +86,7 @@ fun updateConstraints(
     @IdRes mainBar: Int,
     isShow: Boolean
 ) {
-    Handler().postDelayed({
+    Handler(Looper.getMainLooper()).postDelayed({
         val set = ConstraintSet()
         set.clone(layout)
         set.connect(

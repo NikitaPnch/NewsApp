@@ -10,8 +10,8 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.newsapp.MainActivity
 import com.example.newsapp.R
-import com.example.newsapp.ui.MainActivity
 
 class NotificationHelper {
 
