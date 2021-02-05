@@ -3,24 +3,16 @@ package com.example.newsapp
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
 import com.example.newsapp.base.BaseFragment
-import com.example.newsapp.bookmarks.ui.BookmarksScreen
-import com.example.newsapp.extensions.NotificationHelper
+import com.example.newsapp.bookmarks.ui.BookmarksFragment
 import com.example.newsapp.extensions.hideKeyboard
 import com.example.newsapp.extensions.updateConstraints
-import com.example.newsapp.searchscreen.ui.SearchScreen
-import com.example.newsapp.topheadlinesscreen.TopHeadlinesScreen
-import com.example.newsapp.topheadlinesscreen.di.NEWS_FEED_QUALIFIER
-import com.github.terrakok.cicerone.Navigator
-import com.github.terrakok.cicerone.NavigatorHolder
-import com.github.terrakok.cicerone.Router
-import com.github.terrakok.cicerone.androidx.AppNavigator
-import com.github.terrakok.cicerone.androidx.AppScreen
+import com.example.newsapp.searchscreen.ui.SearchFragment
+import com.example.newsapp.topheadlinesscreen.TopHeadlinesFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_holder.*
-import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.named
 
 class HolderFragment : BaseFragment(R.layout.fragment_holder) {
 
@@ -30,28 +22,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
         }
     }
 
-    private val navigator: Navigator by lazy { createNavigator() }
     private lateinit var snackBar: Snackbar
-    private val router: Router by inject(named(NEWS_FEED_QUALIFIER))
-    private val navigatorHolder: NavigatorHolder by inject(named(NEWS_FEED_QUALIFIER))
-    private val notificationHelper: NotificationHelper by inject()
-
-    private val topHeadlinesScreen by lazy {
-        TopHeadlinesScreen.get()
-    }
-
-    private val bookmarksScreen by lazy {
-        BookmarksScreen.get()
-    }
-
-    private val searchScreen by lazy {
-        SearchScreen.get()
-    }
-
-
-    private fun createNavigator(): Navigator {
-        return AppNavigator(requireActivity(), R.id.fragment_container, childFragmentManager)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,18 +33,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
             Snackbar.LENGTH_LONG
         )
 
-        notificationHelper.createNotificationChannel(requireContext())
         setupBottomNavigation()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        navigatorHolder.setNavigator(navigator)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        navigatorHolder.removeNavigator()
     }
 
     override fun onAvailable() {
@@ -91,17 +51,15 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> {
-                    hideKeyboard(requireActivity())
-                    setupFragment(R.string.news, topHeadlinesScreen)
+                    replaceFragment(R.string.news, TopHeadlinesFragment.newInstance())
                     showMainBarWithAnim()
                 }
                 R.id.action_bookmarks -> {
-                    hideKeyboard(requireActivity())
-                    setupFragment(R.string.bookmarks, bookmarksScreen)
+                    replaceFragment(R.string.bookmarks, BookmarksFragment.newInstance())
                     showMainBarWithAnim()
                 }
                 R.id.action_search -> {
-                    setupFragment(R.string.search, searchScreen)
+                    replaceFragment(R.string.search, SearchFragment.newInstance())
                     hideMainBarWithAnim()
                 }
                 else -> {
@@ -109,13 +67,16 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
             }
             true
         }
-        router.replaceScreen(topHeadlinesScreen)
+        replaceFragment(R.string.news, TopHeadlinesFragment.newInstance())
     }
 
-    // устанавливает выбранный фрагмент с параметрами
-    private fun setupFragment(@StringRes name: Int, screen: AppScreen) {
+    // заменяет фрагменты
+    private fun replaceFragment(@StringRes name: Int, fragment: Fragment) {
+        hideKeyboard(requireActivity())
         renameBar(name)
-        router.replaceScreen(screen)
+        parentFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_container, fragment)
+        }.commit()
     }
 
     // показывает сообщение о состоянии интернет соединения

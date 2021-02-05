@@ -19,6 +19,17 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
 import com.example.newsapp.R
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+
+// вытаскивает timestamp из строки с датой
+fun getTimestampFromString(dateStr: String): Long {
+    val newString = dateStr.replace("T", " ").replace("Z", "")
+    val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault())
+    val date: Date = formatter.parse(newString) as Date
+    return date.time
+}
 
 // показать клавиатуру для выбранного editText
 fun showKeyboard(activity: Activity, editText: EditText) {

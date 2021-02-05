@@ -15,6 +15,12 @@ import timber.log.Timber
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
+    companion object {
+        fun newInstance(): SearchFragment {
+            return SearchFragment()
+        }
+    }
+
     private val model: SearchScreenViewModel by sharedViewModel()
     private val adapter = ListDelegationAdapter(
         searchAdapterDelegate {
@@ -32,10 +38,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         setupTextChanges()
         et_search.requestFocus()
         showKeyboard(requireActivity(), et_search)
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun setupRecycler() {

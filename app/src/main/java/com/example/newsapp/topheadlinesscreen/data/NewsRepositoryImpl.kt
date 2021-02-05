@@ -14,9 +14,7 @@ class NewsRepositoryImpl(private val remote: NewsRemoteSource, private val local
                 model.mapToEntityModel()
             }
         }.map {
-            local.setArticles(it)
-        }.map {
-            local.readLocal()
+            local.rewriteAndGetLocal(it)
         }.map { list ->
             list.map {
                 it.mapToUiModel()

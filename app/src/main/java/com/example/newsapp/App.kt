@@ -23,7 +23,6 @@ class App : Application() {
             androidLogger(Level.ERROR)
             modules(
                 networkModule,
-                navModule,
                 databaseModule,
                 notificationModule,
                 mainScreenModule,

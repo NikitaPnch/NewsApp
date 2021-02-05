@@ -18,6 +18,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookmarksFragment : Fragment() {
 
+    companion object {
+        fun newInstance(): BookmarksFragment {
+            return BookmarksFragment()
+        }
+    }
+
     private val viewModel: BookmarksViewModel by viewModel()
     private val adapter = ListDelegationAdapter(
         bookmarkAdapterDelegate(

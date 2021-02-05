@@ -10,7 +10,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-const val NEWS_FEED_QUALIFIER = "NEWS_FEED_QUALIFIER"
 const val ARTICLES_TABLE = "ARTICLES_TABLE"
 
 val mainScreenModule = module {

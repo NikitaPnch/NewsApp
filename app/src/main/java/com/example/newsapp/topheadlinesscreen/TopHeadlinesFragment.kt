@@ -2,6 +2,7 @@ package com.example.newsapp.topheadlinesscreen
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,12 @@ import kotlinx.android.synthetic.main.fragment_top_headlines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
+
+    companion object {
+        fun newInstance(): TopHeadlinesFragment {
+            return TopHeadlinesFragment()
+        }
+    }
 
     private val viewModel: TopHeadlinesScreenViewModel by viewModel()
     private val adapter = ListDelegationAdapter(
@@ -30,8 +37,8 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupObservers()
         setupRecycler()
+        setupObservers()
         setupSwipeRefreshNews()
     }
 
@@ -46,6 +53,7 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
             }
             STATUS.ERROR -> {
                 srl_refresh_news.isRefreshing = false
+                Toast.makeText(requireContext(), viewState.errorMessage, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -58,7 +66,8 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
     // установка "Потянуть для обновления" - заново запросить новости
     private fun setupSwipeRefreshNews() {
         srl_refresh_news.setOnRefreshListener {
-            getNews()
+            viewModel.processUiEvent(UiEvent.OnUserRefresh)
+            viewModel.processUiEvent(UiEvent.OnRefreshNews)
         }
     }
 
@@ -66,10 +75,5 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
     private fun setupRecycler() {
         rv_news.layoutManager = LinearLayoutManager(requireContext())
         rv_news.setAdapterAndCleanupOnDetachFromWindow(adapter)
-    }
-
-    // получить новости
-    private fun getNews() {
-        viewModel.processUiEvent(UiEvent.OnRefreshNews)
     }
 }

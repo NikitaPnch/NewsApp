@@ -18,7 +18,7 @@ class TopHeadlinesScreenViewModel(
         processDataEvent(UiEvent.OnRefreshNews)
     }
 
-    override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList())
+    override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList(), "")
 
     override fun reduce(event: Event, previousState: ViewState): ViewState? {
         when (event) {
@@ -29,7 +29,7 @@ class TopHeadlinesScreenViewModel(
                     interactor.saveBookmark(event.articleModel.mapToBookmarkModel())
                 }
                 action.flatMap {
-                    interactor.getAllNews()
+                    interactor.getNews()
                 }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -38,13 +38,12 @@ class TopHeadlinesScreenViewModel(
                             processDataEvent(DataEvent.SuccessBookmarkStatusChanged(it))
                         },
                         {
-                            it
+                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
                         }
                     )
             }
 
             is UiEvent.OnRefreshNews -> {
-                processDataEvent(DataEvent.OnLoadData)
                 interactor.getTopHeadlines(localeResolver.getLocaleCountry())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -53,7 +52,7 @@ class TopHeadlinesScreenViewModel(
                             processDataEvent(DataEvent.SuccessNewsRequest(it))
                         },
                         {
-                            it
+                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
                         }
                     )
             }
@@ -76,6 +75,10 @@ class TopHeadlinesScreenViewModel(
                     status = STATUS.CONTENT,
                     articleList = event.listArticleModel
                 )
+            }
+
+            is DataEvent.ErrorNewsRequest -> {
+                return previousState.copy(status = STATUS.ERROR, errorMessage = event.errorMessage)
             }
         }
 
