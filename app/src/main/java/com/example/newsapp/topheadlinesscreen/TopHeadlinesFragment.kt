@@ -66,7 +66,6 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
     // установка "Потянуть для обновления" - заново запросить новости
     private fun setupSwipeRefreshNews() {
         srl_refresh_news.setOnRefreshListener {
-            viewModel.processUiEvent(UiEvent.OnUserRefresh)
             viewModel.processUiEvent(UiEvent.OnRefreshNews)
         }
     }

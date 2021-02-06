@@ -83,7 +83,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             }
             STATUS.ERROR -> {
                 main_bar_search_view.hideProgressBar()
-                this.requireContext().showToastMessage(R.string.error_message)
+                requireContext().showToastMessage(R.string.error_message)
                 Timber.tag("ERROR").e(viewState.errorMessage)
             }
         }

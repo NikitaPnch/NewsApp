@@ -44,6 +44,7 @@ class TopHeadlinesScreenViewModel(
             }
 
             is UiEvent.OnRefreshNews -> {
+                processDataEvent(DataEvent.OnLoadData)
                 interactor.getTopHeadlines(localeResolver.getLocaleCountry())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

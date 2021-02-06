@@ -11,7 +11,6 @@ data class ViewState(
 
 sealed class UiEvent : Event {
     object OnRefreshNews : UiEvent()
-    object OnUserRefresh : UiEvent()
     data class OnBookmarkClick(val articleModel: ArticleModel) : UiEvent()
 }
 
