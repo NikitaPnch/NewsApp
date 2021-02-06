@@ -42,6 +42,11 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
         setupSwipeRefreshNews()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.processUiEvent(UiEvent.OnRefreshNews)
+    }
+
     private fun render(viewState: ViewState) {
         when (viewState.status) {
             STATUS.LOAD -> {

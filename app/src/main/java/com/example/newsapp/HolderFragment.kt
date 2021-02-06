@@ -24,6 +24,10 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
 
     private lateinit var snackBar: Snackbar
 
+    private val topHeadlinesFragment by lazy { TopHeadlinesFragment.newInstance() }
+    private val bookmarksFragment by lazy { BookmarksFragment.newInstance() }
+    private val searchFragment by lazy { SearchFragment.newInstance() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,15 +55,15 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
         bottom_navigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> {
-                    replaceFragment(R.string.news, TopHeadlinesFragment.newInstance())
+                    replaceFragment(R.string.news, topHeadlinesFragment)
                     showMainBarWithAnim()
                 }
                 R.id.action_bookmarks -> {
-                    replaceFragment(R.string.bookmarks, BookmarksFragment.newInstance())
+                    replaceFragment(R.string.bookmarks, bookmarksFragment)
                     showMainBarWithAnim()
                 }
                 R.id.action_search -> {
-                    replaceFragment(R.string.search, SearchFragment.newInstance())
+                    replaceFragment(R.string.search, searchFragment)
                     hideMainBarWithAnim()
                 }
                 else -> {
@@ -67,7 +71,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
             }
             true
         }
-        replaceFragment(R.string.news, TopHeadlinesFragment.newInstance())
+        replaceFragment(R.string.news, topHeadlinesFragment)
     }
 
     // заменяет фрагменты

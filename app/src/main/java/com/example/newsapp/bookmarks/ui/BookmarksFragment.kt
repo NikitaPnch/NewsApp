@@ -52,12 +52,19 @@ class BookmarksFragment : Fragment() {
         setupSwipeRefreshBookmarks()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.processUiEvent(UiEvent.OnRefreshBookmarks)
+    }
+
     private fun render(viewState: ViewState) {
         when (viewState.status) {
             STATUS.LOAD -> {
                 srl_refresh_bookmarks.isRefreshing = true
             }
             STATUS.CONTENT -> {
+                rv_bookmarks.isVisible = true
+                empty_view_bookmark.isVisible = false
                 srl_refresh_bookmarks.isRefreshing = false
                 adapter.setData(viewState.bookmarksList)
             }
@@ -68,7 +75,6 @@ class BookmarksFragment : Fragment() {
                 rv_bookmarks.isVisible = false
                 srl_refresh_bookmarks.isRefreshing = false
                 empty_view_bookmark.isVisible = true
-                adapter.setData(viewState.bookmarksList)
             }
         }
     }

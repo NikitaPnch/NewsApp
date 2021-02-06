@@ -8,10 +8,6 @@ import io.reactivex.schedulers.Schedulers
 
 class BookmarksViewModel(private val interactor: BookmarksInteractor) : BaseViewModel<ViewState>() {
 
-    init {
-        processDataEvent(DataEvent.RequestBookmarks)
-    }
-
     override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList())
 
     override fun reduce(event: Event, previousState: ViewState): ViewState? {

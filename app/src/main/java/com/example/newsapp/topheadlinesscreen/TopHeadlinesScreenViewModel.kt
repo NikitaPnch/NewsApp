@@ -14,10 +14,6 @@ class TopHeadlinesScreenViewModel(
 ) :
     BaseViewModel<ViewState>() {
 
-    init {
-        processDataEvent(UiEvent.OnRefreshNews)
-    }
-
     override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList(), "")
 
     override fun reduce(event: Event, previousState: ViewState): ViewState? {
