@@ -44,7 +44,7 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
 
     override fun onResume() {
         super.onResume()
-        viewModel.processUiEvent(UiEvent.OnRefreshNews)
+        viewModel.processUiEvent(UiEvent.GetCurrentNews)
     }
 
     private fun render(viewState: ViewState) {
@@ -59,6 +59,9 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
             STATUS.ERROR -> {
                 srl_refresh_news.isRefreshing = false
                 Toast.makeText(requireContext(), viewState.errorMessage, Toast.LENGTH_SHORT).show()
+            }
+            STATUS.CURRENT_CONTENT -> {
+                adapter.setData(viewState.articleList)
             }
         }
     }

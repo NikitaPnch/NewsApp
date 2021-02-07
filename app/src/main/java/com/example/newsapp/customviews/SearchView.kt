@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import com.example.newsapp.R
 import com.example.newsapp.extensions.liveDataNotNull
@@ -21,7 +22,13 @@ class SearchView @JvmOverloads constructor(
         View.inflate(context, R.layout.view_search, this)
     }
 
-    fun setText(text: CharSequence) {
+    var text: String
+        get() = this.toString()
+        set(value) {
+            setText(value)
+        }
+
+    private fun setText(text: CharSequence) {
         with(et_search) {
             setText(text)
             setSelection(text.length)
@@ -54,13 +61,13 @@ class SearchView @JvmOverloads constructor(
 
     // показать progress
     fun showProgressBar() {
-        ll_select_filter.visibility = View.GONE
-        progress_search.visibility = View.VISIBLE
+        ll_select_filter.isVisible = false
+        progress_search.isVisible = true
     }
 
     // скрыть progress
     fun hideProgressBar() {
-        ll_select_filter.visibility = View.VISIBLE
-        progress_search.visibility = View.GONE
+        ll_select_filter.isVisible = true
+        progress_search.isVisible = false
     }
 }

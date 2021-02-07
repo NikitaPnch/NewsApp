@@ -81,15 +81,6 @@ fun Context.showToastMessage(@StringRes message: Int) {
     ).show()
 }
 
-// меняет видимость переданного view
-fun View.changeViewVisibility(needShow: Boolean) {
-    visibility = if (needShow) {
-        View.VISIBLE
-    } else {
-        View.GONE
-    }
-}
-
 // меняет привязку constraint с анимацией
 fun updateConstraints(
     layout: ConstraintLayout,

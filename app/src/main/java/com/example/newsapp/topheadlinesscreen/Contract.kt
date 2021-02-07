@@ -11,6 +11,7 @@ data class ViewState(
 
 sealed class UiEvent : Event {
     object OnRefreshNews : UiEvent()
+    object GetCurrentNews : UiEvent()
     data class OnBookmarkClick(val articleModel: ArticleModel) : UiEvent()
 }
 
@@ -18,11 +19,12 @@ sealed class DataEvent : Event {
     object OnLoadData : DataEvent()
     data class SuccessNewsRequest(val listArticleModel: List<ArticleModel>) : DataEvent()
     data class ErrorNewsRequest(val errorMessage: String) : DataEvent()
-    data class SuccessBookmarkStatusChanged(val listArticleModel: List<ArticleModel>) : DataEvent()
+    data class SuccessCurrentNewsRequest(val listArticleModel: List<ArticleModel>) : DataEvent()
 }
 
 enum class STATUS {
     LOAD,
     CONTENT,
+    CURRENT_CONTENT,
     ERROR
 }

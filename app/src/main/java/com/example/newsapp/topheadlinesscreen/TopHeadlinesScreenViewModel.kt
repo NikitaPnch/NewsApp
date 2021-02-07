@@ -14,6 +14,10 @@ class TopHeadlinesScreenViewModel(
 ) :
     BaseViewModel<ViewState>() {
 
+    init {
+        processDataEvent(UiEvent.OnRefreshNews)
+    }
+
     override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList(), "")
 
     override fun reduce(event: Event, previousState: ViewState): ViewState? {
@@ -31,7 +35,21 @@ class TopHeadlinesScreenViewModel(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         {
-                            processDataEvent(DataEvent.SuccessBookmarkStatusChanged(it))
+                            processDataEvent(DataEvent.SuccessCurrentNewsRequest(it))
+                        },
+                        {
+                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
+                        }
+                    )
+            }
+
+            is UiEvent.GetCurrentNews -> {
+                interactor.getNews()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+                            processDataEvent(DataEvent.SuccessCurrentNewsRequest(it))
                         },
                         {
                             processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
@@ -67,15 +85,18 @@ class TopHeadlinesScreenViewModel(
                 )
             }
 
-            is DataEvent.SuccessBookmarkStatusChanged -> {
+            is DataEvent.SuccessCurrentNewsRequest -> {
                 return previousState.copy(
-                    status = STATUS.CONTENT,
+                    status = STATUS.CURRENT_CONTENT,
                     articleList = event.listArticleModel
                 )
             }
 
             is DataEvent.ErrorNewsRequest -> {
-                return previousState.copy(status = STATUS.ERROR, errorMessage = event.errorMessage)
+                return previousState.copy(
+                    status = STATUS.ERROR,
+                    errorMessage = event.errorMessage
+                )
             }
         }
 

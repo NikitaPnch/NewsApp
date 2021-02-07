@@ -2,6 +2,7 @@ package com.example.newsapp.searchscreen.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -69,16 +70,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun render(viewState: ViewState) {
+        if (main_bar_search_view.text.isEmpty()) {
+            main_bar_search_view.text = viewState.query
+        }
         when (viewState.status) {
             STATUS.LOAD -> {
                 main_bar_search_view.showProgressBar()
             }
             STATUS.CONTENT -> {
-                with(main_bar_search_view) {
-                    setText(viewState.query)
-                    hideProgressBar()
-                }
-                empty_view_search.changeViewVisibility(viewState.searchList.isEmpty())
+                main_bar_search_view.hideProgressBar()
+                empty_view_search.isVisible = viewState.searchList.isEmpty()
                 adapter.setData(viewState.searchList)
             }
             STATUS.ERROR -> {
