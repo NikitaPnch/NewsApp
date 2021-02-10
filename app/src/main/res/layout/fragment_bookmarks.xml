@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/srl_refresh_bookmarks"
+    android:id="@+id/srlRefreshBookmarks"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <com.example.newsapp.customviews.EmptyView
-            android:id="@+id/empty_view_bookmark"
+            android:id="@+id/emptyViewBookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:image="@drawable/ic_baseline_bookmark_border_24"
@@ -21,7 +21,7 @@
             app:text="@string/no_bookmarks" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_bookmarks"
+            android:id="@+id/rvBookmarks"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

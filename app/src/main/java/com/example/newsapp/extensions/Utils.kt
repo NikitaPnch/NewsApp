@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
@@ -32,7 +31,7 @@ fun getTimestampFromString(dateStr: String): Long {
 }
 
 // показать клавиатуру для выбранного editText
-fun showKeyboard(activity: Activity, editText: EditText) {
+fun showKeyboard(activity: Activity) {
     val imm: InputMethodManager =
         activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     var view: View? = activity.currentFocus

@@ -24,7 +24,7 @@ class BookmarksViewModel(private val interactor: BookmarksInteractor) : BaseView
                             processDataEvent(DataEvent.SuccessBookmarkDelete(it))
                         },
                         {
-                            it
+                            processDataEvent(DataEvent.ErrorBookmarksRequest)
                         }
                     )
             }
@@ -40,7 +40,7 @@ class BookmarksViewModel(private val interactor: BookmarksInteractor) : BaseView
                             processDataEvent(DataEvent.SuccessBookmarksRequest(it))
                         },
                         {
-                            it
+                            processDataEvent(DataEvent.ErrorBookmarksRequest)
                         }
                     )
             }
@@ -58,6 +58,9 @@ class BookmarksViewModel(private val interactor: BookmarksInteractor) : BaseView
                     status = if (event.listBookmarksModel.isEmpty()) STATUS.EMPTY else STATUS.CONTENT,
                     bookmarksList = event.listBookmarksModel
                 )
+            }
+            is DataEvent.ErrorBookmarksRequest -> {
+                return previousState.copy(status = STATUS.ERROR)
             }
         }
         return null

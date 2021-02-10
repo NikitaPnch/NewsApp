@@ -36,7 +36,7 @@ val networkModule = module {
                     }
                 }
             ).apply {
-                setLevel(HttpLoggingInterceptor.Level.BODY)
+                setLevel(HttpLoggingInterceptor.Level.BASIC)
             })
             .build()
     }

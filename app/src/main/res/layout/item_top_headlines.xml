@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_news_item_container"
+    android:id="@+id/clNewsItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite">
 
     <TextView
-        android:id="@+id/tv_header_news"
+        android:id="@+id/tvHeaderNews"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -18,22 +18,22 @@
         android:paddingEnd="16dp"
         android:textColor="@color/colorBlackHeader"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@id/ll_bookmark"
+        app:layout_constraintEnd_toStartOf="@id/llBookmark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Заголовок" />
 
     <LinearLayout
-        android:id="@+id/ll_bookmark"
+        android:id="@+id/llBookmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_header_news"
+        app:layout_constraintBottom_toBottomOf="@id/tvHeaderNews"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iv_bookmark"
+            android:id="@+id/ivBookmark"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_baseline_bookmark_border_24" />
@@ -41,7 +41,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_news_description"
+        android:id="@+id/tvNewsDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -54,10 +54,10 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_header_news" />
+        app:layout_constraintTop_toBottomOf="@id/tvHeaderNews" />
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/sdv_image_news"
+        android:id="@+id/sdvImageNews"
         android:layout_width="0dp"
         android:layout_height="240dp"
         android:layout_marginStart="16dp"
@@ -66,10 +66,10 @@
         android:background="@drawable/bg_gray_with_corners"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_news_description" />
+        app:layout_constraintTop_toBottomOf="@id/tvNewsDescription" />
 
     <View
-        android:id="@+id/view_item_divider"
+        android:id="@+id/viewItemDivider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
@@ -79,6 +79,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sdv_image_news" />
+        app:layout_constraintTop_toBottomOf="@id/sdvImageNews" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

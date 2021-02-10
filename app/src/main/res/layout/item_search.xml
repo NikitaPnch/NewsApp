@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_search_item_container"
+    android:id="@+id/clSearchItemContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
@@ -11,7 +11,7 @@
     android:paddingBottom="4dp">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/sdv_search_image"
+        android:id="@+id/sdvSearchImage"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:background="@drawable/bg_gray_with_corners"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_search_header"
+        android:id="@+id/tvSearchHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -29,12 +29,12 @@
         android:maxLines="2"
         android:textColor="@color/colorBlackHeader"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@id/sdv_search_image"
+        app:layout_constraintEnd_toStartOf="@id/sdvSearchImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_search_description"
+        android:id="@+id/tvSearchDescription"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="4dp"
@@ -45,8 +45,8 @@
         android:textColor="@color/colorBlackText"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sdv_search_image"
+        app:layout_constraintEnd_toStartOf="@id/sdvSearchImage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_search_header" />
+        app:layout_constraintTop_toBottomOf="@id/tvSearchHeader" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

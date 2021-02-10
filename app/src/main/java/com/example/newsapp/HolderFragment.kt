@@ -3,16 +3,20 @@ package com.example.newsapp
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.StringRes
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.newsapp.base.BaseFragment
 import com.example.newsapp.bookmarks.ui.BookmarksFragment
+import com.example.newsapp.databinding.FragmentHolderBinding
 import com.example.newsapp.extensions.hideKeyboard
 import com.example.newsapp.extensions.updateConstraints
+import com.example.newsapp.extensions.viewBinding
 import com.example.newsapp.searchscreen.ui.SearchFragment
 import com.example.newsapp.topheadlinesscreen.TopHeadlinesFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.fragment_holder.*
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
 class HolderFragment : BaseFragment(R.layout.fragment_holder) {
 
@@ -23,6 +27,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
     }
 
     private lateinit var snackBar: Snackbar
+    private val binding by viewBinding(FragmentHolderBinding::bind)
 
     private val topHeadlinesFragment by lazy { TopHeadlinesFragment.newInstance() }
     private val bookmarksFragment by lazy { BookmarksFragment.newInstance() }
@@ -32,12 +37,23 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
         super.onViewCreated(view, savedInstanceState)
 
         snackBar = Snackbar.make(
-            root_layout,
+            binding.rootLayout,
             getString(R.string.no_internet_connection),
             Snackbar.LENGTH_LONG
         )
 
+        setupKeyboardVisibleEvent()
         setupBottomNavigation()
+    }
+
+    private fun setupKeyboardVisibleEvent() {
+        setEventListener(
+            requireActivity(),
+            object : KeyboardVisibilityEventListener {
+                override fun onVisibilityChanged(isOpen: Boolean) {
+                    binding.bottomNavigation.isVisible = !isOpen
+                }
+            })
     }
 
     override fun onAvailable() {
@@ -52,7 +68,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
 
     // настраивает BottomNavigationView для переключения фрагментов между собой
     private fun setupBottomNavigation() {
-        bottom_navigation.setOnNavigationItemSelectedListener {
+        binding.bottomNavigation.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.action_today -> {
                     replaceFragment(R.string.news, topHeadlinesFragment)
@@ -79,7 +95,7 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
         hideKeyboard(requireActivity())
         renameBar(name)
         parentFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, fragment)
+            replace(R.id.fragmentContainer, fragment)
         }.commit()
     }
 
@@ -95,38 +111,42 @@ class HolderFragment : BaseFragment(R.layout.fragment_holder) {
 
     // скрывает main bar с анимацией
     private fun hideMainBarWithAnim() {
-        if (main_bar.visibility == View.VISIBLE) {
-            main_bar.animate().apply {
-                translationY(-main_bar.height.toFloat())
-                withEndAction {
-                    main_bar.visibility = View.INVISIBLE
+        with(binding) {
+            if (mainBar.visibility == View.VISIBLE) {
+                mainBar.animate().apply {
+                    translationY(-mainBar.height.toFloat())
+                    withEndAction {
+                        mainBar.visibility = View.INVISIBLE
+                    }
+                    startDelay = 250
+                    duration = 250
+                    start()
                 }
-                startDelay = 250
-                duration = 250
-                start()
+                updateConstraints(rootLayout, R.id.fragmentContainer, R.id.mainBar, isShow = false)
             }
-            updateConstraints(root_layout, R.id.fragment_container, R.id.main_bar, isShow = false)
         }
     }
 
     // показывает main bar с анимацией
     private fun showMainBarWithAnim() {
-        if (main_bar.visibility == View.INVISIBLE) {
-            main_bar.animate().apply {
-                translationYBy(main_bar.height.toFloat())
-                withStartAction {
-                    main_bar.visibility = View.VISIBLE
+        with(binding) {
+            if (mainBar.visibility == View.INVISIBLE) {
+                mainBar.animate().apply {
+                    translationYBy(mainBar.height.toFloat())
+                    withStartAction {
+                        mainBar.visibility = View.VISIBLE
+                    }
+                    startDelay = 250
+                    duration = 250
+                    start()
                 }
-                startDelay = 250
-                duration = 250
-                start()
+                updateConstraints(rootLayout, R.id.fragmentContainer, R.id.mainBar, isShow = true)
             }
-            updateConstraints(root_layout, R.id.fragment_container, R.id.main_bar, isShow = true)
         }
     }
 
     // переименовывает main bar
     private fun renameBar(@StringRes name: Int) {
-        main_bar_text.text = resources.getString(name)
+        binding.mainBarText.text = resources.getString(name)
     }
 }
