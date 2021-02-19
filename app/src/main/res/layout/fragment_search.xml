@@ -2,14 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_layout_search"
+    android:id="@+id/rootLayoutSearch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    tools:context=".ui.MainActivity">
+    tools:context=".MainActivity">
 
-    <com.example.newsapp.ui.customviews.EmptyView
-        android:id="@+id/empty_view_search"
+    <com.example.newsapp.customviews.EmptyView
+        android:id="@+id/emptyViewSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:image="@drawable/ic_baseline_search_24"
@@ -19,23 +19,24 @@
         app:layout_constraintTop_toTopOf="parent"
         app:text="Нет результатов" />
 
-    <com.example.newsapp.ui.customviews.SearchView
-        android:id="@+id/main_bar_search"
+    <com.example.newsapp.customviews.SearchView
+        android:id="@+id/mainBarSearchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/rv_news_search"
+        app:layout_constraintBottom_toTopOf="@id/rvNewsSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_news_search"
+        android:id="@+id/rvNewsSearch"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_bar_search" />
+        app:layout_constraintTop_toBottomOf="@id/mainBarSearchView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

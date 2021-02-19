@@ -10,28 +10,31 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.newsapp.MainActivity
 import com.example.newsapp.R
-import com.example.newsapp.ui.MainActivity
 
 class NotificationHelper {
 
     companion object {
-        const val CHANNEL_ID = "101"
+        const val CHANNEL_ID = "NEWS_APP_CHANNEL_ID"
+        const val SHOW_NEWS = "SHOW_NEWS"
     }
 
     // показывает уведомление
-    fun showNotification(context: Context) {
+    fun showNotification(context: Context, title: String, text: String, url: String) {
         val contentIntent = PendingIntent.getActivity(
             context, 0,
-            Intent(context, MainActivity::class.java), 0
+            Intent(context, MainActivity::class.java).apply {
+                putExtra(SHOW_NEWS, url)
+            }, PendingIntent.FLAG_UPDATE_CURRENT
         )
         val mBuilder = NotificationCompat.Builder(
             context,
             CHANNEL_ID
         )
             .setSmallIcon(R.drawable.ic_stat_news)
-            .setContentTitle(context.resources.getString(R.string.app_name))
-            .setContentText(context.resources.getString(R.string.fresh_news))
+            .setContentTitle(title)
+            .setContentText(text)
             .setContentIntent(contentIntent)
             .setDefaults(Notification.DEFAULT_SOUND)
             .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)

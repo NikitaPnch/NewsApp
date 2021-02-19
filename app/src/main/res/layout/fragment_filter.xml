@@ -7,7 +7,7 @@
     tools:background="@color/colorWhite">
 
     <TextView
-        android:id="@+id/tv_header"
+        android:id="@+id/tvHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_medium"
@@ -15,12 +15,12 @@
         android:text="@string/filters"
         android:textColor="@color/colorBlackHeader"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@id/tv_clear"
+        app:layout_constraintEnd_toStartOf="@id/tvClear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_clear"
+        android:id="@+id/tvClear"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:gravity="end|center"
@@ -29,23 +29,23 @@
         android:textColor="@color/colorBlackText"
         android:textSize="14sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/tv_sort_by"
+        app:layout_constraintBottom_toTopOf="@id/tvSortBy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_header"
+        app:layout_constraintStart_toEndOf="@id/tvHeader"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_sort_by"
+        android:id="@+id/tvSortBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="@string/sorted_by"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_header" />
+        app:layout_constraintTop_toBottomOf="@id/tvHeader" />
 
     <Spinner
-        android:id="@+id/spinner_filter"
+        android:id="@+id/spinnerFilter"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
@@ -54,20 +54,20 @@
         android:entries="@array/filterNames"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sort_by" />
+        app:layout_constraintTop_toBottomOf="@id/tvSortBy" />
 
     <TextView
-        android:id="@+id/tv_date"
+        android:id="@+id/tvDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:text="@string/date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinner_filter" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerFilter" />
 
     <TextView
-        android:id="@+id/tv_from_date"
+        android:id="@+id/tvFromDate"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
@@ -77,12 +77,12 @@
         android:paddingEnd="8dp"
         android:text="@string/from"
         android:textColor="@color/colorBlack"
-        app:layout_constraintEnd_toStartOf="@id/tv_to_date"
+        app:layout_constraintEnd_toStartOf="@id/tvToDate"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_date" />
+        app:layout_constraintTop_toBottomOf="@id/tvDate" />
 
     <TextView
-        android:id="@+id/tv_to_date"
+        android:id="@+id/tvToDate"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
@@ -93,11 +93,11 @@
         android:text="@string/to"
         android:textColor="@color/colorBlack"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_from_date"
-        app:layout_constraintTop_toBottomOf="@id/tv_date" />
+        app:layout_constraintStart_toEndOf="@id/tvFromDate"
+        app:layout_constraintTop_toBottomOf="@id/tvDate" />
 
     <TextView
-        android:id="@+id/tv_show_result"
+        android:id="@+id/tvShowResult"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -112,7 +112,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_to_date" />
+        app:layout_constraintTop_toBottomOf="@id/tvToDate" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
