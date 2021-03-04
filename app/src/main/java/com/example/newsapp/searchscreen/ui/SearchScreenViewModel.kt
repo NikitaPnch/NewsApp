@@ -4,8 +4,6 @@ import com.example.newsapp.base.BaseViewModel
 import com.example.newsapp.base.Event
 import com.example.newsapp.extensions.LocaleResolver
 import com.example.newsapp.searchscreen.data.SearchInteractor
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class SearchScreenViewModel(
     private val searchInteractor: SearchInteractor,
@@ -23,7 +21,7 @@ class SearchScreenViewModel(
             errorMessage = ""
         )
 
-    override fun reduce(event: Event, previousState: ViewState): ViewState? {
+    override suspend fun reduce(event: Event, previousState: ViewState): ViewState? {
 
         when (event) {
             is UiEvent.OnEditTextChanged -> {
@@ -34,17 +32,14 @@ class SearchScreenViewModel(
                     from = previousState.fromDate,
                     to = previousState.toDate,
                     language = localeResolver.getLocaleLanguage()
+                ).fold(
+                    {
+                        processDataEvent(DataEvent.OnSearchError(event.query, it))
+                    },
+                    {
+                        processDataEvent(DataEvent.OnSearchSuccess(event.query, it))
+                    }
                 )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            processDataEvent(DataEvent.OnSearchSuccess(event.query, it))
-                        },
-                        {
-                            processDataEvent(DataEvent.OnSearchError(event.query, it))
-                        }
-                    )
             }
             is DataEvent.OnSearchSuccess -> {
                 return previousState.copy(
@@ -84,14 +79,12 @@ class SearchScreenViewModel(
                     previousState.toDate,
                     localeResolver.getLocaleLanguage()
                 )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            processDataEvent(DataEvent.OnSearchSuccess(previousState.query, it))
-                        },
+                    .fold(
                         {
                             processDataEvent(DataEvent.OnSearchError(previousState.query, it))
+                        },
+                        {
+                            processDataEvent(DataEvent.OnSearchSuccess(previousState.query, it))
                         }
                     )
             }

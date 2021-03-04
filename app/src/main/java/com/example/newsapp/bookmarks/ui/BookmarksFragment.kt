@@ -14,7 +14,7 @@ import com.example.newsapp.extensions.setAdapterAndCleanupOnDetachFromWindow
 import com.example.newsapp.extensions.setData
 import com.example.newsapp.extensions.showToastMessage
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BookmarksFragment : Fragment(R.layout.fragment_bookmarks) {
 
@@ -26,7 +26,7 @@ class BookmarksFragment : Fragment(R.layout.fragment_bookmarks) {
 
     private val binding by viewBinding(FragmentBookmarksBinding::bind)
 
-    private val viewModel: BookmarksViewModel by viewModel()
+    private val viewModel: BookmarksViewModel by sharedViewModel()
     private val adapter = ListDelegationAdapter(
         bookmarkAdapterDelegate(
             onClick = {

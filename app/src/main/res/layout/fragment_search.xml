@@ -5,7 +5,7 @@
     android:id="@+id/rootLayoutSearch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="?attr/colorSecondary"
     tools:context=".MainActivity">
 
     <com.example.newsapp.customviews.EmptyView

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="BaseTheme">
+
+        <item name="android:statusBarColor">@color/background_medium_night</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <item name="colorPrimary">@color/background_medium_night</item>
+        <item name="colorSecondary">@color/background_dark_night</item>
+        <item name="colorAccent">@color/grey_200</item>
+        <item name="colorOnPrimary">@color/white_100</item>
+
+        <!--  region Backgrounds  -->
+        <item name="colorSurfaceMain">@color/background_dark_night</item>
+        <item name="colorSurfaceAccent">@color/background_medium_night</item>
+        <item name="colorSurfaceNative">@color/background_medium_night</item>
+        <item name="colorSurfaceVariant">@color/background_medium_night</item>
+
+        <item name="android:colorBackground">@color/background_dark_night</item>
+        <item name="colorBackground">?android:colorBackground</item>
+        <item name="colorAccented">@color/white_100</item>
+
+        <item name="elevationOverlayEnabled">false</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogThemeDark</item>
+        <item name="alertDialogTheme">@style/AlertDialogStyleDark</item>
+
+    </style>
+
+</resources>

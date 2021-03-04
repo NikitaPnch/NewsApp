@@ -3,6 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('D:\\AndroidKey\\key.jks')
+            storePassword '26uqDNGW06ui77wat'
+            keyAlias 'key0'
+            keyPassword '26uqDNGW06ui77wat'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
@@ -23,6 +31,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "API_KEY", "\"4f26925b85824439a8d15410472beff9\""
+            signingConfig signingConfigs.release
         }
     }
 
@@ -61,7 +70,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     androidTestImplementation "androidx.room:room-testing:$room_version"
-    implementation "androidx.room:room-rxjava2:$room_version"
 
     // design library
     def support_version = "29.0.2"
@@ -82,7 +90,6 @@ dependencies {
     def coroutines_version = "1.4.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-rx3:$coroutines_version"
 
     // koin
     def koin_version = '2.2.0'
@@ -93,17 +100,8 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-fragment:$koin_version"
 
-    // rxjava2
-    def rx_java2 = "2.2.8"
-    implementation "io.reactivex.rxjava2:rxjava:$rx_java2"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
-
-    // fresco
-    def fresco_version = "2.2.0"
-    implementation "com.facebook.fresco:fresco:$fresco_version"
-
     // lifecycle
-    def lifecycle_version = "2.3.0-rc01"
+    def lifecycle_version = "2.3.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
@@ -119,7 +117,6 @@ dependencies {
     // retrofit2
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // logging interceptor
@@ -151,8 +148,10 @@ dependencies {
 
     def work_version = "2.5.0"
     implementation "androidx.work:work-runtime-ktx:$work_version"
-    implementation "androidx.work:work-rxjava2:$work_version"
 
-    // To use only without reflection variants of viewBinding
-    implementation 'com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:1.4.1'
+    def view_binding = "1.4.1"
+    implementation "com.kirich1409.viewbindingpropertydelegate:vbpd-noreflection:$view_binding"
+
+    def glide = "4.11.0"
+    implementation "com.github.bumptech.glide:glide:$glide"
 }

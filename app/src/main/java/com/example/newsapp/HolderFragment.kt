@@ -5,12 +5,12 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newsapp.base.BaseFragment
 import com.example.newsapp.bookmarks.ui.BookmarksFragment
 import com.example.newsapp.databinding.FragmentHolderBinding
 import com.example.newsapp.extensions.hideKeyboard
 import com.example.newsapp.extensions.updateConstraints
-import com.example.newsapp.extensions.viewBinding
 import com.example.newsapp.searchscreen.ui.SearchFragment
 import com.example.newsapp.topheadlinesscreen.TopHeadlinesFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar

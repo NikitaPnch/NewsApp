@@ -9,11 +9,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.newsapp.Constants
 import com.example.newsapp.R
 import com.example.newsapp.databinding.FragmentFilterBinding
 import com.example.newsapp.extensions.toQueryDate
-import com.example.newsapp.extensions.viewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.text.DateFormat

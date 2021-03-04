@@ -13,7 +13,7 @@ import com.example.newsapp.extensions.setAdapterAndCleanupOnDetachFromWindow
 import com.example.newsapp.extensions.setData
 import com.example.newsapp.extensions.showToastMessage
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
 
@@ -25,7 +25,7 @@ class TopHeadlinesFragment : Fragment(R.layout.fragment_top_headlines) {
 
     private val binding by viewBinding(FragmentTopHeadlinesBinding::bind)
 
-    private val viewModel: TopHeadlinesScreenViewModel by viewModel()
+    private val viewModel: TopHeadlinesScreenViewModel by sharedViewModel()
     private val adapter = ListDelegationAdapter(
         articleAdapterDelegate(
             onClickNews = {

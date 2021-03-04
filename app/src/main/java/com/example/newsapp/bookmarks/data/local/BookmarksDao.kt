@@ -2,20 +2,19 @@ package com.example.newsapp.bookmarks.data.local
 
 import androidx.room.*
 import com.example.newsapp.bookmarks.di.BOOKMARKS_TABLE
-import io.reactivex.Single
 
 @Dao
 interface BookmarksDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun create(entity: BookmarkEntity): Single<Unit>
+    fun create(entity: BookmarkEntity)
 
     @Query("SELECT * FROM $BOOKMARKS_TABLE")
-    fun read(): Single<List<BookmarkEntity>>
+    fun read(): List<BookmarkEntity>
 
     @Update
-    fun update(entity: BookmarkEntity): Single<Unit>
+    fun update(entity: BookmarkEntity)
 
     @Delete
-    fun delete(entity: BookmarkEntity): Single<Unit>
+    fun delete(entity: BookmarkEntity)
 }

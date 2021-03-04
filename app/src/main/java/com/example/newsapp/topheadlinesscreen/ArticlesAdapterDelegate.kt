@@ -3,7 +3,7 @@ package com.example.newsapp.topheadlinesscreen
 import com.example.newsapp.Item
 import com.example.newsapp.R
 import com.example.newsapp.databinding.ItemTopHeadlinesBinding
-import com.example.newsapp.extensions.createImageRequest
+import com.example.newsapp.extensions.loadImage
 import com.example.newsapp.topheadlinesscreen.model.ArticleModel
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -34,7 +34,7 @@ fun articleAdapterDelegate(
                 }
                 tvHeaderNews.text = item.title
                 tvNewsDescription.text = item.description
-                sdvImageNews.createImageRequest(item.urlToImage)
+                sdvImageNews.loadImage(item.urlToImage)
             }
         }
     }

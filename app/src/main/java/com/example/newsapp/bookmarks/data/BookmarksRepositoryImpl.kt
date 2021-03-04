@@ -2,18 +2,26 @@ package com.example.newsapp.bookmarks.data
 
 import com.example.newsapp.bookmarks.data.local.BookmarksDao
 import com.example.newsapp.bookmarks.ui.model.BookmarkModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class BookmarksRepositoryImpl(private val bookmarksDao: BookmarksDao) : BookmarksRepository {
-    override fun saveBookmark(entity: BookmarkModel) =
+    override suspend fun saveBookmark(entity: BookmarkModel) = withContext(Dispatchers.IO) {
         bookmarksDao.create(entity.mapToEntityModel())
+    }
 
-    override fun updateBookmark(entity: BookmarkModel) =
+
+    override suspend fun updateBookmark(entity: BookmarkModel) = withContext(Dispatchers.IO) {
         bookmarksDao.update(entity.mapToEntityModel())
+    }
 
-    override fun deleteBookmark(entity: BookmarkModel) =
+    override suspend fun deleteBookmark(entity: BookmarkModel) = withContext(Dispatchers.IO) {
         bookmarksDao.delete(entity.mapToEntityModel())
+    }
 
-    override fun getAllBookmarks() = bookmarksDao.read().map { list ->
-        list.map { it.mapToUiModel() }
+    override suspend fun getAllBookmarks() = withContext(Dispatchers.IO) {
+        bookmarksDao.read().let { list ->
+            list.map { it.mapToUiModel() }
+        }
     }
 }

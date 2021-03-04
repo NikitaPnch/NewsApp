@@ -13,9 +13,17 @@
     <string name="news">Новости</string>
     <string name="bookmarks">Закладки</string>
     <string name="channel_name">Уведомления</string>
-    <string name="channel_description">Уведомления</string>
+    <string name="service_channel_name">Сервисные уведомления</string>
     <string name="fresh_news">Свежие новости</string>
     <string name="no_bookmarks">Нет закладок</string>
+    <string name="loading">Загрузка…</string>
+    <string name="cancel">Отменить</string>
+    <string name="refresh_news">Обновление новостей</string>
+    <string name="message_battery_optimization">Для стабильной работы уведомлений, пожалуйста уберите приложение из оптимизации работы батареи.</string>
+    <string name="remove">Убрать</string>
+    <string name="do_not_show_again">Больше не показывать</string>
+    <string name="shpr_do_not_show_again">DO_NOT_SHOW_AGAIN</string>
+    <string name="no_results">Нет результатов</string>
 
     <string-array name="filterNames">
         <item>Дате публикации</item>

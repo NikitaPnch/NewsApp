@@ -1,7 +1,7 @@
 package com.example.newsapp.searchscreen.data.remote
 
 class SearchRemoteSource(private val searchApi: SearchApi) {
-    fun searchEverything(
+    suspend fun searchEverything(
         query: String,
         sortBy: String?,
         from: String?,

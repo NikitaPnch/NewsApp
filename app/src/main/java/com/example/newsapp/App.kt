@@ -1,12 +1,11 @@
 package com.example.newsapp
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.newsapp.bookmarks.di.bookmarksModule
-import com.example.newsapp.extensions.NotificationHelper
-import com.example.newsapp.extensions.getImagePipelineConfig
+import com.example.newsapp.notifications.NotificationHelper
 import com.example.newsapp.searchscreen.di.searchScreenModule
 import com.example.newsapp.topheadlinesscreen.di.mainScreenModule
-import com.facebook.drawee.backends.pipeline.Fresco
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -16,11 +15,10 @@ import timber.log.Timber
 
 class App : Application() {
 
-    val notificationHelper by inject<NotificationHelper>()
+    private val notificationHelper by inject<NotificationHelper>()
 
     override fun onCreate() {
         super.onCreate()
-        Fresco.initialize(this, getImagePipelineConfig(this))
         Timber.plant(Timber.DebugTree())
         startKoin {
             androidContext(this@App)
@@ -35,6 +33,12 @@ class App : Application() {
                 searchScreenModule
             )
         }
-        notificationHelper.createNotificationChannel(this)
+        with(notificationHelper) {
+            createNotificationChannel(this@App)
+            createLowPriorityNotificationChannel(this@App)
+        }
+
+        // чтобы приложение использовало темную тему в зависимости от системы
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 }

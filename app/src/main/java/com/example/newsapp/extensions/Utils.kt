@@ -2,25 +2,32 @@ package com.example.newsapp.extensions
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
-import com.example.newsapp.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 // вытаскивает timestamp из строки с датой
 fun getTimestampFromString(dateStr: String): Long {
@@ -61,12 +68,6 @@ fun toQueryDate(year: Int, month: Int, dayOfMonth: Int): String {
 fun openUrlInCustomTabs(context: Context, url: String) {
     val customTabsIntent = CustomTabsIntent.Builder().apply {
         addDefaultShareMenuItem()
-        setToolbarColor(
-            ContextCompat.getColor(
-                context,
-                R.color.colorWhite
-            )
-        )
     }.build()
     customTabsIntent.launchUrl(context, Uri.parse(url))
 }
@@ -101,3 +102,28 @@ fun updateConstraints(
     }, 250)
 }
 
+fun convertDpToPixel(dp: Float): Float {
+    val metrics: DisplayMetrics = Resources.getSystem().displayMetrics
+    val px = dp * (metrics.densityDpi / 160f)
+    return px.roundToInt().toFloat()
+}
+
+// загрузка изображения с помощью glide
+fun ImageView.loadImage(url: String) {
+    Glide.with(this.context)
+        .load(url)
+        .apply(
+            RequestOptions().transform(
+                CenterCrop(),
+                RoundedCorners(convertDpToPixel(8f).toInt())
+            )
+        )
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(this)
+}
+
+inline fun <reified T> attempt(func: () -> T): Either<Throwable, T> = try {
+    Either.Right(func.invoke())
+} catch (e: Throwable) {
+    Either.Left(e)
+}

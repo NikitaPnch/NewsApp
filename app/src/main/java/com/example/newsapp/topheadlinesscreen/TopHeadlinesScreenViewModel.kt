@@ -5,8 +5,6 @@ import com.example.newsapp.base.Event
 import com.example.newsapp.extensions.LocaleResolver
 import com.example.newsapp.topheadlinesscreen.data.NewsInteractor
 import com.example.newsapp.topheadlinesscreen.data.mapToBookmarkModel
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class TopHeadlinesScreenViewModel(
     private val localeResolver: LocaleResolver,
@@ -20,7 +18,7 @@ class TopHeadlinesScreenViewModel(
 
     override fun initialViewState(): ViewState = ViewState(STATUS.LOAD, emptyList(), "")
 
-    override fun reduce(event: Event, previousState: ViewState): ViewState? {
+    override suspend fun reduce(event: Event, previousState: ViewState): ViewState? {
         when (event) {
             is UiEvent.OnBookmarkClick -> {
                 val action = if (event.articleModel.isBookmarked) {
@@ -28,48 +26,37 @@ class TopHeadlinesScreenViewModel(
                 } else {
                     interactor.saveBookmark(event.articleModel.mapToBookmarkModel())
                 }
-                action.flatMap {
-                    interactor.getNews()
-                }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            processDataEvent(DataEvent.SuccessCurrentNewsRequest(it))
-                        },
-                        {
-                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
-                        }
-                    )
+                action.fold(
+                    {
+                        processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
+                    },
+                    {
+                        processDataEvent(UiEvent.GetCurrentNews)
+                    }
+                )
             }
 
             is UiEvent.GetCurrentNews -> {
-                interactor.getNews()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            processDataEvent(DataEvent.SuccessCurrentNewsRequest(it))
-                        },
-                        {
-                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
-                        }
-                    )
+                interactor.getNews().fold(
+                    {
+                        processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
+                    },
+                    {
+                        processDataEvent(DataEvent.SuccessCurrentNewsRequest(it))
+                    }
+                )
             }
 
             is UiEvent.OnRefreshNews -> {
                 processDataEvent(DataEvent.OnLoadData)
-                interactor.getTopHeadlines(localeResolver.getLocaleCountry())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            processDataEvent(DataEvent.SuccessNewsRequest(it))
-                        },
-                        {
-                            processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
-                        }
-                    )
+                interactor.getTopHeadlines(localeResolver.getLocaleCountry()).fold(
+                    {
+                        processDataEvent(DataEvent.ErrorNewsRequest(it.localizedMessage ?: ""))
+                    },
+                    {
+                        processDataEvent(DataEvent.SuccessNewsRequest(it))
+                    }
+                )
             }
 
             is DataEvent.SuccessNewsRequest -> {

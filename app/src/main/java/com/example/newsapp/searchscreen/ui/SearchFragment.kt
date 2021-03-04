@@ -54,7 +54,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun setupClicks() {
 
         // кнопка вызывает диалог с фильтрами
-        binding.mainBarSearchView.setupFilterClicks(this) {
+        binding.mainBarSearchView.setupFilterClicks(viewLifecycleOwner) {
             showFilterFragment()
         }
     }
@@ -63,7 +63,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     private fun setupTextChanges() {
 
         // слушатель изменения текста в поиске
-        binding.mainBarSearchView.setupSearchChanges(this) {
+        binding.mainBarSearchView.setupSearchChanges(viewLifecycleOwner) {
             model.processUiEvent(UiEvent.OnEditTextChanged(it))
         }
     }

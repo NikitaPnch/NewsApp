@@ -2,7 +2,7 @@ package com.example.newsapp.searchscreen.ui
 
 import com.example.newsapp.Item
 import com.example.newsapp.databinding.ItemSearchBinding
-import com.example.newsapp.extensions.createImageRequest
+import com.example.newsapp.extensions.loadImage
 import com.example.newsapp.searchscreen.ui.model.SearchModel
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
@@ -23,7 +23,7 @@ fun searchAdapterDelegate(
             bind {
                 tvSearchHeader.text = item.title
                 tvSearchDescription.text = item.description
-                sdvSearchImage.createImageRequest(item.urlToImage)
+                sdvSearchImage.loadImage(item.urlToImage)
             }
         }
     }
